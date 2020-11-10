@@ -74,104 +74,16 @@
   {{ content_for_header }}
 </head>
 
-<body class="template-{{ template | split: '.' | first }} {% unless template == 'blog' or template == 'collection' or template contains 'product' or template contains 'cart' or template contains 'search'%} home {% endunless %} {% if template == "index"%} home{{settings.select_home_page}} {% endif %}">
+<body class="template-{{ template | split: '.' | first }} {% unless template == 'blog' or template == 'collection' or template contains 'product' or template contains 'cart' or template contains 'search'%} home {% endunless %}">
   {% section 'header' %}
   {% section 'hcat-nav'%}
   <div class="page-container" id="PageContainer">
-
     <main id="MainContent">
       {{ content_for_layout }}
     </main>
-
     {% section 'footer' %}
-
-  </div>
-  
-  {% if settings.popup_newsletter_enable %}
-  <div id="popup_newsletter" class="kt-popup-newsletter " style="display:none; background-image:url('{{'popupbg.jpg' | asset_url}}')">
-    <div class="popup-content">
-      <h4 class="sub-title">{{settings.popup_newsletter_title}}</h4>
-      <h5 class="title">{{settings.popup_newsletter_value_of_sale}}</h5>
-      <h5 class="small-title">{{settings.settings[popup_newsletter_description]}}</h5>
-      <div class="input-block inner-content">
-        <form method="post" action="{{settings.newsletter_form_action}}">
-          <div class="input-inner">
-            <input type="text" class="input-info" value="{% if customer %}{{ customer.email }}{% endif %}" required name="EMAIL" placeholder="{{settings.popup_newsletter_placehoder_email}}">
-            <button type="submit" name="submit_button" class="submit">{{settings.popup_newsletter_submit_button}}</button>
-          </div>
-        </form>
-      </div>
-      <div class="dontshow">
-        <input type="checkbox" class="checkbox" id="chks_newsletter">
-        <label id="lbl_newsletter" class="text-label">{{settings.popup_newsletter_check_remmember}}</label>
-      </div>
-    </div>
-  </div>
-  {% endif %}	
-  
-  <div class="modal fade bs-example-modal-lg" id="moda-compare" tabindex="-1" role="dialog">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content" id="compare-modal">
-        <div class="modal-header">
-          <h4 class="modal-title" style="    float: left;">{{settings.product_page_compare_button}}</h4>
-          <button type="button" class="close" title="Close" data-dismiss="modal" aria-label="Close"><span title="Close" aria-hidden="true">&times;</span></button>
-        </div>
-        <div class="modal-body">
-          <div class="table-wrapper">
-            <table class="table table-hover">
-              <thead>
-                <tr class="th-compare">
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody id="table-compare">
-
-              </tbody>
-
-            </table>
-           </div>
-        </div>
-        <div class="modal-footer">
-          
-        </div>
-      </div>
-    </div>
-  </div>
-  <script type="text/javaScript"> 
-  //Script by Trånn: http://come.to/tronds
-      //Submitted to JavaScript Kit (http://javascriptkit.com)
-      //Visit http://javascriptkit.com for this script
-
-      var initialsubj="Hay buddy, take a look at this"
-      var initialmsg="Hi:\n You may want to check out this site: "+window.location
-      var good;
-      function checkEmailAddress(field) {
-
-        var goodEmail = field.value.match(/\b(^(\S+@).+((\.com)|(\.net)|(\.edu)|(\.mil)|(\.gov)|(\.org)|(\.info)|(\.sex)|(\.biz)|(\.aero)|(\.coop)|(\.museum)|(\.name)|(\.pro)|(\..{2,2}))$)\b/gi);
-        if (goodEmail) {
-          good = true;
-        }
-        else {
-          alert('Please enter a valid address.');
-          field.focus();
-          field.select();
-          good = false;
-        }
-      }
-      var u = window.location;
-      function mailThisUrl() {
-        good = false
-        checkEmailAddress(document.eMailer.email);
-        if (good) {
-          window.location = "mailto:"+document.eMailer.email.value+"?subject="+initialsubj+"&body="+initialmsg
-        }
-      }
-  </script>
-  
- 
-  <input type="hidden" value="0" id="compare_value" />  
-  
-  <div class="mask-overlay ntpf t__0 r__0 l__0 b__0  pe_none"></div>  
+  </div>  
+  <div class="mask-overlay"></div>  
   {% liquid 
     assign type_name = request.page_type
     assign admin_sp = false
@@ -184,24 +96,25 @@
       assign admin_sp = true
     endif 
     section 'cross-sell-popup'  
-  	if type_name != 'cart'
-  		section 'cart_widget'
-	endif  
+    if type_name != 'cart'
+      section 'cart_widget'
+  endif  
     if type_name == 'product' and settings.sticky_atc and product.available
       section 'sticky_add_to_cart'
     endif
     section 'promotion-product-popup'  
   %}
   
-  {% include 'modal-quickview' %}
+  {% include 'modal-quickview' %}  
+  {% include 'modal-compare' %}
   {% include 'currencies' %}
   
   {%- if admin_sp == false -%}
-   	<div class="js_lz_slpr dn salse_pp_mb_{{settings.enable_salse_pp_mb}}" data-include="/search/?q={{t_name}}&view=cr_s_pp"></div>
+    <div class="js_lz_slpr dn salse_pp_mb_{{settings.enable_salse_pp_mb}}" data-include="/search/?q={{t_name}}&view=cr_s_pp"></div>
   {%- endif -%}
   {% comment %}{% include 'upsell-modal' %} {% endcomment %}
   {%- assign search_pr_type = search.terms | split:'product_type:' | last | url_encode -%}
   <div id="nt_search_canvas" class="hero_canvas  lazyload" data-include="{{ routes.search_url }}?q={{search_pr_type}}&view=ajax-product"></div>
-   <a class="back-to-top" href="#"></a>
+  <a class="back-to-top" href="#"></a>
 </body>
 </html>
