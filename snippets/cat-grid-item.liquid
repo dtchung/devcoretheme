@@ -1,0 +1,39 @@
+{%- liquid
+  assign collection = collections[block.settings.collection]
+  assign image = block.settings.image | default:collection.image
+  assign home_t = 'homepage.onboarding.collection_title' | t  | append:' #' | append:for_i 
+ 
+
+  case index 
+    when 1 
+		 assign cimg = 'https://placehold.it/530x600.png/56cfe1/fff?text=540x540'
+    when 2
+		 assign cimg = 'https://placehold.it/530x600.png/a6d7cb/fff?text=540x540'
+    when 3
+		 assign cimg = 'https://placehold.it/530x600.png/f4a896/fff?text=540x540'
+	when 4
+		 assign cimg = 'https://placehold.it/530x600.png/efe1ba/fff?text=540x540'
+	when 5
+		 assign cimg = 'https://placehold.it/530x600.png/c8b09b/fff?text=540x540'
+	when 6
+		 assign cimg = 'https://placehold.it/530x600.png/a5d0d9/fff?text=540x540'
+	else 
+		 assign cimg = 'https://placehold.it/530x600.png/a1a19f/fff?text=540x540'
+  endcase
+-%}
+
+<div id="bk_{{block.id}}" class="cat_grid_item cat_space_item {{grid}}" {{ block.shopify_attributes }}>
+  <div class="cat_grid_item__content">
+    <a href="{{ collection.url | default:'/admin/collections' }}" class="cat_grid_item__link">
+      {%- if image != blank -%}
+        <div class="pr_lazy_img nt_bg_lz lazyload {{block.settings.img_align}}" data-bgset="{{ image | img_url: '1x1' }}" data-ratio="{{image.aspect_ratio}}" data-sizes="auto" data-parent-fit="width"{% if cat_grid_item %} style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;"{% endif %}></div>
+      {%- else -%}
+        <div class="pr_lazy_img nt_bg_lz lazyload {{block.settings.img_align}}" data-bg="{{cimg}}"{% if cat_grid_item %} style="padding-top:100%;"{% endif %}></div>
+      {%- endif -%}
+    </a>
+    <div class="cat_grid_item__wrapper">
+      <div class="cat_grid_item__title">{{ block.settings.title | default:collection.title | default:home_t }}</div>
+      <div class="cat_grid_item__count display-none">{{collection.all_products_count}} {{pr_txt}}</div>
+    </div>
+  </div>
+</div>

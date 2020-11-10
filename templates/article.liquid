@@ -1,0 +1,124 @@
+<div class="main-content shop-page main-content-blog">
+  <div class="container">
+    <div class="breadcrumbs col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <a href="/">Home</a> / <span class="current">{{ 'Blog'| link_to: blog.url}} / {{ article.title | link_to: article.url}}</span>
+    </div>
+    <div class="row flex-layout">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 article-body-max-width">
+        <div class="post-item layout3">
+          <div class="post-format">
+            <a href="{{ article.url}}"><img class="lazyload" data-src="{{ article.image.src | img_url: '1024x1024' }}" alt=""></a>
+          </div>
+          <div class="post-info">
+            <div class="head">
+              <a href="{{ article.url}}" class="post-title">{{ article.title }}</a>
+              <ul class="meta-post">
+                <li class="author">{{'blogs.article.by_author' | t: author : article.author}}</li>
+                <li class="time-post"><a href="#"><span class="day">{{ article.created_at | date: "%d" }}</span> {{ article.created_at | date: "%b" }} {{ article.created_at | date: "%Y" }}</a></li>	
+              </ul>
+            </div>
+            <div class="main-info-post">
+              <div>
+                  {% if article.excerpt.size > 0 %}
+                    {% comment %}{{ article.excerpt | strip_html}} {% endcomment %}
+                    <p class="des">{{ article.content }}</p>
+                  {% else %}
+                    <p >{{ article.content }}</p>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tags">
+          {% if article.tags.size > 0 %}
+          	{% include 'tags-article' %}                     
+          {% endif %}
+                    
+          <div class="top-comment">
+            <div class="avata"><img class="lazyload" data-src="//www.gravatar.com/avatar/{{ article.user.email | md5 }}" alt=""></div>
+            <div class="comment-content">
+              <h4 class="name">{{article.user.first_name}} {{article.user.last_name}}</h4>
+              <p class="comment">{{article.user.bio | strip_html }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="list-comment content-form">
+          <h4 class="main-title">{{ 'blogs.comments.comments_with_count.other' | t : count : article.comments_count}}</h4>
+            
+            {% paginate article.comments by 3 %}
+
+                {% if blog.comments_enabled? %}
+
+                  {% if comment and comment.created_at %}
+                    <p class="note form-success">
+                      {% if blog.moderated? %}
+                      {{ 'blogs.comments.success_moderated' | t }}
+                      {% else %}
+                      {{ 'blogs.comments.success' | t }}
+                      {% endif %}
+                    </p>
+                  {% endif %}
+                  {% if article.comments_count > 0 %} 
+                    {% for comment in article.comments %}                
+                      {% include 'comment' %}                
+                    {% endfor %}
+                  {% endif %}
+
+                  {% if paginate.pages > 1 %}
+                      {% include 'pagination' %}
+                  {% endif %}
+                {% endif %}
+            {% endpaginate %}
+          
+          	{% include 'blog-comment-form' %}
+                
+      </div>      
+    </div>
+    
+  </div>
+	  
+</div>
+</div>
+
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "Article",
+    "articleBody": {{ article.content | strip_html | json }},
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": {{ shop.url | append: page.url | json }}
+    },
+    "headline": {{ article.title | json }},
+    {%- if article.excerpt != blank -%}
+      "description": {{ article.excerpt | strip_html | json }},
+    {%- endif -%}
+    {%- if article.image -%}
+      {%- assign image_size = article.image.width | append: 'x' -%}
+      "image": [
+        {{ article | img_url: image_size | prepend: "https:" | json }}
+      ],
+    {%- endif -%}
+    "datePublished": {{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "dateCreated": {{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "dateModified": {{ article.updated_at | date: '%Y-%m-%dT%H:%M:%SZ' | json }},
+    "author": {
+      "@type": "Person",
+      "name": {{ article.author | json }}
+    },
+    "publisher": {
+      "@type": "Organization",
+      {%- if settings.logo -%}{%- assign image = settings.logo -%}{%- assign image_size = image.width | append:'x' -%}
+        "logo": {
+          "@type": "ImageObject",
+          "height": {{ image.height | json }},
+          "url": {{ image | img_url: image_size | prepend: "https:" | json }},
+          "width": {{ image.width | json }}
+        },
+      {%- endif -%}
+      "name": {{ shop.name | json }}
+    }
+  }
+  </script>

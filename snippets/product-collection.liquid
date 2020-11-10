@@ -1,0 +1,186 @@
+{% include 'product-res-variables' %}
+{%- assign show_label_in_stock = false | default: settings.product_collection_show_label_in_stock -%}
+{%- assign show_label_out_stock = true | default: settings.product_collection_show_label_out_stock -%}
+{%- assign show_label_sale = true | default: settings.product_collection_show_label_sale -%}
+{%- assign show_label_new = true | default: settings.product_collection_show_label_new -%}
+{%- assign show_label_hot = true | default: settings.product_collection_show_label_hot -%}
+{%- assign show_countdown = false | default: settings.product_collection_show_countdown -%}
+{%- assign show_images_navigation = true | default: settings.product_collection_show_images_navigation -%}
+{%- assign show_title = true | default: settings.product_collection_show_title -%}
+{%- assign show_sku = false | default: settings.product_collection_show_sku -%}
+{%- assign show_barcode = false | default: settings.product_collection_show_barcode -%}
+{%- assign show_availability = false | default: settings.product_collection_show_availability -%}
+{%- assign show_type = false | default: settings.product_collection_show_type -%}
+{%- assign show_vendor = false | default: settings.product_collection_show_vendor -%}
+{%- assign show_description = false | default: settings.product_collection_show_description -%}
+{%- assign show_price = true | default: settings.product_collection_show_price -%}
+{%- assign show_options = true | default: settings.product_collection_show_options -%}
+{%- assign show_custom_options = true | default: settings.product_show_custom_options -%}
+{%- assign show_quantity = false | default: settings.product_collection_show_quantity -%}
+{%- assign show_button_add_to_cart = true | default: settings.product_collection_show_button_add_to_cart -%}
+{%- assign show_button_add_to_wishlist = true | default: settings.product_collection_show_button_add_to_wishlist -%}
+{%- assign show_button_add_to_compare = true | default: settings.product_collection_show_button_add_to_compare -%}
+{%- assign show_button_quick_view = true | default: settings.product_collection_show_button_quick_view -%}
+{%- assign show_reviews = true | default: settings.product_collection_show_reviews -%}
+{%- assign hide_reviews_counter = true | default: settings.product_collection_hide_reviews_counter -%}
+{% assign build_variant = "all" %}
+<div class="product-collection "{% include 'product-get-attributes' %} >
+    <div class="product-collection__image product-image js-product-images-navigation js-product-images-hovered-end js-product-images-hover"{% if hover_image != blank %} data-js-product-image-hover="{{ img_hover_url }}" data-js-product-image-hover-id="{{ hover_image.id }}"{% endif %}>
+        <a href="{{ product.url | within: collection }}" class="d-block cursor-default" data-js-product-image style ="{% if current_img_url != blank %} background-image:url('{{ current_img_url }}'); {% endif %}">
+          	{% assign image = product.featured_image.src %}
+          	{% assign ratio = image.aspect_ratio |default:1.0 %}
+          	<div class="lazyload nt_bg_lz pr_lazy_img" data-url-img ="{% if current_img_url != blank %}{{ current_img_url }} {% endif %}" data-bgset="{% if image != blank %}{{ image | img_url: '1x1' }}{% else %}https://placehold.it/1080x1080.png{% endif %}" data-ratio="{{ratio}}" data-sizes="auto"></div>     
+          	<div class="loading"> </div>
+        </a>
+      	{%- if show_label_in_stock or show_label_out_stock or show_label_sale or show_label_new or show_label_hot -%}
+            {%- assign label_present = true -%}
+        {%- else -%}
+            {%- assign label_present = false -%}
+        {%- endif -%}
+      	{%- if label_present or show_button_quick_view -%}
+            <div class="product-image__overlay-top">
+              <a href="{{ url }}" class="absolute-stretch"></a>
+              {%- if label_present -%}
+                  <div class="product-image__overlay-top-left ">
+                    {% include 'product-get-label'%}
+                  </div>
+              {%- endif -%}
+              
+              {%- if show_button_quick_view -%}
+                  <div class="product-image__overlay-top-right product-collection__button-quick-view ">
+                    {% render 'product-get-button-quick-view' with url:url, current_variant_id:current_variant_id %}
+                  </div>
+              {%- endif -%}
+            </div>  
+      	{%- endif -%}
+        {%- if show_countdown or show_images_navigation -%}
+            <div class="product-image__overlay-bottom position-absolute d-flex justify-content-center justify-content-lg-start align-items-end bottom-0 left-0 w-100 px-10 pb-10">
+              <a href="{{ url}}" class="absolute-stretch cursor-default"></a>
+              {%- if show_countdown -%}
+              <div class="product-image__overlay-bottom-left product-collection__countdown position-relative mt-10">
+                {% render 'product-get-countdown' with date: countdown_date, centered: centered %}
+              </div>
+              {%- endif -%}
+              {% if show_images_navigation %}
+                  <div class="product-image__overlay-bottom-right product-collection__images-navigation position-relative d-none d-lg-block mt-10 ml-auto">
+                  	{% render 'product-get-images-navigation' with product: product %}  
+                  </div>
+              {%- endif -%}
+            </div>
+        {%- endif -%}
+    </div>
+    <div class="product-collection__content">        
+        {%- if product.collections.size > 0 -%}
+          <div class="product-collection__more-info">
+            {% render 'product-get-collections' with product: product %}
+          </div>
+        {%- endif -%}       
+        {%- if show_title -%}
+            <div class="product-collection__title">
+                <h4 class="m-0">
+                    <a href="{{ url }}">{{ title }}</a>
+                </h4>
+            </div>
+      	{%- endif -%}  
+      
+        {%- if show_sku or show_barcode or show_availability or show_type or show_vendor -%}
+            <div class="product-collection__details">
+                {%- if show_sku -%}
+                    <div class="product-collection__sku{% if sku == blank %} d-none-important{% endif %} mb-5">
+                        <p class="m-0" data-js-product-sku>{{ 'products.product.sku' | t }}: <span>{{ sku }}</span></p>
+                    </div>
+                {%- endif -%}
+                {%- if show_barcode -%}
+                    <div class="product-collection__barcode{% if barcode == blank %} d-none-important{% endif %} mb-5">
+                        <p class="m-0" data-js-product-barcode>{{ 'products.product.barcode' | t }}: <span>{{ barcode }}</span></p>
+                    </div>
+                {%- endif -%}
+                {%- if show_availability -%}
+                    <div class="product-collection__availability">
+                        {%- if quantity == 1 -%}
+                            {%- capture item -%}{{ 'layout.cart.items_count.one' | t }}{%- endcapture -%}
+                        {%- else -%}
+                            {%- capture item -%}{{ 'layout.cart.items_count.other' | t }}{%- endcapture -%}
+                        {%- endif -%}
+                        <p class="m-0" data-js-product-availability data-availability="{% if quantity == 1 %}true{% else %}false{% endif %}">{{ 'products.product.availability' | t }}: <span>{% if available %}{{ 'products.product.availability_value_in_stock' | t: count: quantity, item: item }}{% else %}{{ 'products.product.availability_value_out_stock' | t }}{% endif %}</span></p>
+                    </div>
+                {%- endif -%}
+                {%- if show_type -%}
+                    <div class="product-collection__type{% if type == blank %} d-none-important{% endif %} mb-5">
+                        <p class="m-0" data-js-product-type>{{ 'products.product.type' | t }}: <span>{{ type }}</span></p>
+                    </div>
+                {%- endif -%}
+                {%- if show_vendor -%}
+                    <div class="product-collection__vendor{% if vendor == blank %} d-none-important{% endif %} mb-5">
+                        <p class="m-0" data-js-product-vendor>{{ 'products.product.vendor' | t }}: <span>{{ vendor }}</span></p>
+                    </div>
+                {%- endif -%}
+            </div>
+        {%- endif -%}
+        {%- if show_description and description != blank -%}
+            <div class="product-collection__description d-none ">
+                <p class="m-0">{{ description | strip_html | truncatewords: 40 }}</p>
+            </div>
+        {%- endif -%}
+        {%- if show_price -%}
+            <div class="product-collection__price ">
+                {% render 'product-get-price' with price: price compare_at_price: compare_at_price %}
+            </div>
+        {%- endif -%}
+        {% form "product", product, id: null, class: "frm_product_collection", data-js-product-form: '' %}
+            {%- if show_options and show_custom_options -%}
+                <div class="product-collection__options">
+                    {% include 'product-get-options' %}
+                </div>
+            {%- else -%}
+                {%- assign variants_size = product.variants | size -%}
+                {%- if variants_size > 1 -%}
+                    {%- assign enable_select_options_button = true -%}
+                {%- endif -%}
+            {%- endif -%}
+            {%- if show_button_add_to_cart or show_options -%}
+                <div class="product-collection__variants {% if show_options == false or show_custom_options %} d-none{% elsif product.variants.size == 1 and product.variants.first.title contains 'Default' %} d-none{% endif %}">
+                    {% render 'product-get-variants' with product: product current_variant: current_variant show_options: show_options show_custom_options: show_custom_options %}
+                </div>
+            {%- endif -%}
+            {%- if show_quantity -%}
+                <div class="product-collection__quantity">
+                    {% render 'product-get-quantity' %}
+                </div>
+            {%- endif -%}
+            {%- if show_button_add_to_cart or show_button_add_to_wishlist or show_button_add_to_compare or show_button_quick_view -%}
+                <div class="product-collection__buttons">
+                    {%- if show_button_add_to_cart -%}
+                        <div class="product-collection__button-add-to-cart">
+                            {% include 'product-get-button-cart' %}
+                        </div>
+                    {%- endif -%}
+                    {%- if show_button_add_to_wishlist or show_button_add_to_compare or show_button_quick_view -%}
+                        <div class="product-collection__buttons-section">
+                            {%- if show_button_add_to_wishlist -%}
+                                <div class="product-collection__button-add-to-wishlist">
+                                    {% include 'product-get-button-wishlist' %}
+                                </div>
+                            {%- endif -%}
+                            {%- if show_button_add_to_compare -%}
+                                <div class="product-collection__button-add-to-compare">
+                                    {% include 'product-get-button-compare' %}
+                                </div>
+                            {%- endif -%}
+                            {%- if show_button_quick_view -%}
+                                <div class="product-collection__button-quick-view-mobile d-none">
+                                    {% render 'product-get-button-quick-view' with type: 'btn-text' product_enable_tooltips: product_enable_tooltips %}
+                                </div>
+                            {%- endif -%}
+                        </div>
+                    {%- endif -%}
+                </div>
+            {%- endif -%}
+        {% endform %}
+        {%- if show_reviews -%}
+            <div class="product-collection__reviews">
+                {% render 'product-get-review' with id: id hide_empty: hide_empty_reviews hide_counter: hide_reviews_counter hide_mobile_counter: hide_reviews_mobile_counter %}
+            </div>
+        {%- endif -%} 
+    </div>
+</div>

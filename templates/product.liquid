@@ -1,0 +1,14 @@
+<div itemscope itemtype="http://schema.org/Product">
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url }}">
+  <meta itemprop="image" content="{{ product.featured_image.src | img_url: 'grande' }}">
+  {% if product.variants.size > 1 %}
+  	{% include 'product-onsale' %}
+  {% else %}
+      {% if product.available %}
+      	{% include 'product-simple' %}
+      {% else %}
+      	{% include 'product-outofstock' %}
+      {% endif %}
+  {% endif %}
+</div>
+

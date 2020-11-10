@@ -1,0 +1,14 @@
+
+<!-- /templates/404.liquid -->
+<div class="site-content-inner">
+  <div class="page-404">
+    <div class="banner-header" style="{% if settings.bg_image_404%}background-image: url('{{settings.background_img_404}}');{% endif %} {% if settings.bg_color_404%} background-color:{{settings.color_404}};{% endif %}min-height:100hz;" >
+      <div class="page-404-content">
+        <h1 class="title-404">
+          {{settings.error_title}}
+        </h1>
+        <p>{{settings.error_description}} Please <a href="/pages/contact">Contact us</a> to get help! </p>
+      </div>
+    </div>
+  </div>
+</div>

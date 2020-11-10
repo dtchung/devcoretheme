@@ -1,0 +1,292 @@
+{%- liquid
+  assign sett_equal = section.settings.use_eq_height
+  assign show_vendor = section.settings.show_vendor
+  assign col = section.settings.col_pr
+  assign col_tb = '4'
+  assign col_mb = ' pr_animated done' | prepend:'12'
+  assign inc_pr = section.settings.pr_des
+  assign limit = section.settings.limit
+  assign collection = collections[section.settings.collection_id]
+  assign use_cdt = section.settings.use_cdt
+  assign txt_cd = 'products.grid_items.offer_end_in' | t
+  assign key = search.terms | default: request.page_type | strip
+  assign page_type = section.settings[key] -%}
+
+{%- for i in (1..1) %}{% unless page_type or collection == blank %}{% break %}{% endunless -%}
+
+
+{%- capture url_cat -%}{% if collection %}/collections/{{collection.handle}}{% endif %}{%- endcapture -%}
+
+{%- paginate collection.products by limit -%}
+<div data-js-lazy-popup class="js_popup_prpr_wrap container mfp-with-anim" data-stt='{ "pp_version": {{section.settings.pp_version |default:1}},"day_next": {{section.settings.day_next}} }'>
+   <div class="wrap_title">
+      <h3 class="section-title"><span > {{section.settings.title}}</span></h3>        
+      <span class="section-subtitle">{{section.settings.sub_title}}</span>
+    </div>
+   <div data-js-slider-promotion-popup class="nt_products_holder row">
+       {%- if collection != blank -%}         
+         {%- for product in collection.products -%}
+     		{%- render 'product-collection',product:product -%}
+     	{%- endfor -%}         
+       {%- else -%}
+          {%- for i in (1..8) -%}
+             <div class="pr_animated mt__30 pr_grid_item product nt_pr desgin__1 col-6 col-lg-3 col-md-3 done">
+               <div class="product-inner pr"><div class="product-image pr oh"><a class="db" href="/collections/all">{%- capture current -%}{%- cycle 1, 2, 3, 4, 5, 6,7,8 -%}{%- endcapture -%}<div class="pr_lazy_img nt_bg_lz lazyload" style="padding-top:100%" data-bg="https://placehold.it/570x570.png/{% cycle 'a8dacc', '56cfe1', 'f99077','c8b09b','efe1ba','a5d0d9','a1a19f' %}/fff?text=Product+{{current}}"></div></a></div></div>
+               <div class="product-info mt__15"><h3 class="product-title pr fs__14 mg__0 fwm"><a class="cd chp" href="/collections/all">{{ 'homepage.onboarding.product_title' | t }}</a></h3><span class="price dib mb__5"><del>$59.00</del><ins>$39.00</ins></span></div>
+             </div>
+          {%- endfor -%}
+       {%- endif -%}
+   </div>
+</div>
+{%- endpaginate -%}
+
+<style>.popup_prpr_wrap {max-width:{% if col == "2" %}1100{% else %}950{% endif %}px !important;margin:30px auto;padding:30px;}</style>
+{%- endfor -%}
+
+{%- schema -%}
+  {
+    "name": "Promotion product popup",
+    "class":"mfp-hide type_promotion_popup",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Enable an exit popup if user attempts to navigate away from current page as a means of influencing user action on store."
+      },
+      {
+        "type": "paragraph",
+        "content": "Only visible on desktop."
+      },
+      {
+        "type": "header",
+        "content": "== Title Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "what are you looking for?"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text",
+        "default": "Maybe this will help..."
+      },     
+          
+      {
+        "type": "header",
+        "content": "General Settings"
+      },
+      {
+        "id": "collection_id",
+        "type": "collection",
+        "label": "Collection"
+      },
+      {
+        "type": "range",
+        "id": "limit",
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "label": "Products per page",
+        "info": "Number of products per page",
+        "default": 4
+      },
+      {
+        "type": "select",
+        "id": "col_pr",
+        "label": "Products per row",
+        "info": "How many products you want to show per row",
+        "default": "4",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          },
+          {
+            "value": "15",
+            "label": "5"
+          },
+          {
+            "value": "2",
+            "label": "6"
+          }
+        ]
+      },      
+      {
+        "type": "checkbox",
+        "id": "show_vendor",
+        "label": "Show product vendors",
+        "default": false
+      },     
+      {
+        "type": "checkbox",
+        "id": "use_cdt",
+        "default": false,
+        "label": "Use countdown timer?"
+      }, 
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio_cus1",
+        "info": "Aspect Ratio Custom will settings in General panel.",
+        "options": [
+          {
+            "group": "Landscape",
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio4_3",
+            "label": "4:3"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio_nt",
+            "label": "Ratio ASOS"
+          },
+          {
+            "group": "Squared",
+            "value": "ratio1_1",
+            "label": "1:1"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio2_3",
+            "label": "2:3"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio1_2",
+            "label": "1:2"
+          },
+          {
+            "group": "Custom",
+            "value": "ratio_cus1",
+            "label": "Ratio Custom 1"
+          }
+          
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "default": "nt_cover",
+        "options": [
+          {
+            "value": "nt_cover",
+            "label": "Full"
+          },
+          {
+            "value": "nt_contain",
+            "label": "Auto"
+          }
+        ]
+      },      
+      {
+        "type": "header",
+        "content": "Select page to display:"
+      },
+      {
+        "type": "checkbox",
+        "id": "index",
+        "label": "Home page",
+        "default": true,
+        "info": "Popup Newsletter will display on home page"
+      },
+      {
+        "type": "checkbox",
+        "id": "product",
+        "label": "Product single",
+        "default": false,
+        "info": "Popup Newsletter will display on Product single"
+      },
+      {
+        "type": "checkbox",
+        "id": "collection",
+        "label": "Collection page",
+        "default": false,
+        "info": "Popup Newsletter will display on Collection page"
+      },
+      {
+        "type": "checkbox",
+        "id": "article",
+        "label": "Article page",
+        "default": false,
+        "info": "Popup Newsletter will display on Article page"
+      },
+      {
+        "type": "checkbox",
+        "id": "blog",
+        "label": "Blog page",
+        "default": false,
+        "info": "Popup Newsletter will display on Blog page"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart",
+        "label": "Cart page",
+        "default": false,
+        "info": "Popup Newsletter will display on Cart page"
+      },
+      {
+        "type": "checkbox",
+        "id": "page",
+        "label": "Other page",
+        "default": false,
+        "info": "Popup Newsletter will display on Other page"
+      },
+      {
+        "type": "header",
+        "content": "Show popup after Settings"
+      },      
+      {
+        "type": "range",
+        "id": "day_next",
+        "min": 0,
+        "max": 30,
+        "step": 1,
+        "unit": "day",
+        "label": "Day next show (n)",
+        "info": "if customer close the popup, next show will be after 'n' days",
+        "default": 7
+      }
+    ]
+  }
+{% endschema %}

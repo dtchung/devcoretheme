@@ -1,0 +1,538 @@
+{%- liquid
+  assign sett_equal = section.settings.use_eq_height
+  assign col = section.settings.col_pr
+  assign col_tb = section.settings.col_pr_tb 
+  assign col_mb = ' pr_animated done' | prepend:section.settings.col_pr_mb
+  assign limit = section.settings.limit
+  assign use_pagination = section.settings.use_pagination
+  assign blog = blogs[section.settings.blog]
+  assign date = section.settings.date
+  assign by = 'blogs.article.by' | t
+  assign on = 'blogs.article.on' | t  
+  assign show_au = section.settings.show_au
+  assign show_dt = section.settings.show_dt
+  assign show_cm = section.settings.show_cm
+  assign show_cnt = section.settings.show_cnt
+  assign show_rm = section.settings.show_rm
+  assign sid = section.id -%}
+
+{%- paginate blog.articles by limit -%}
+  {%- if paginate.current_page > 1 and use_pagination == 'more' -%}
+    {%- render 'ajax_blog_load',arr_results:blog.articles,paginate:paginate,date:date,by:by,on:on,show_au:show_au,show_dt:show_dt,show_cm:show_cm,col:col,col_tb:col_tb,col_mb:col_mb -%}
+  {%- else -%}
+    {%- assign current_page = '1' -%}
+    {%- liquid
+    assign mg = section.settings.mg
+    assign pd = section.settings.pd
+    assign mg_mb = section.settings.mg_mb
+    assign pd_mb = section.settings.pd_mb
+    assign sid = section.id -%}
+
+    {%- capture style -%}
+        {%- if section.settings.cl_bg != blank -%}#shopify-section-{{sid}} {background-color: {{section.settings.cl_bg}} !important;}{%- endif -%}
+        {%- if mg != blank or pd != blank -%} 
+        .nt_se_{{sid}} {
+           {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+               margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+               {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+           {%- endif -%}
+           {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+               padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+           {%- endif -%}
+        }
+        {%- endif -%}
+        {%- if mg_mb != blank or pd_mb != blank -%} 
+        @media only screen and (max-width: 767px) {
+            .nt_se_{{sid}} {
+               {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+                   margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+                   {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+               {%- endif -%}
+               {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+                   padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+               {%- endif -%}
+            }
+        }
+        {%- endif -%}
+
+        .pr_lazy_img{
+            background-size: {{section.settings.image_size}};
+            background-position: {{section.settings.image_position}};
+        }
+    {%- endcapture -%}
+
+    {%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+    {%- assign layout_des = section.settings.layout_des -%}
+    
+    <div class="nt_se_{{sid}} {{section.settings.layout}}">
+      <div class="wrap_title ">
+      	<h3 class="section-title"><span class="mr__10 ml__10"> {{section.settings.title}}</span></h3>        
+      	<span class="section-subtitle">{{section.settings.sub_title}}</span>
+      </div>
+      <div class="articles nt_products_holder row {{section.settings.image_ratio}} {% if sett_equal %} equal_nt{% endif %}{% if layout_des == '2' %} blog-slider {% endif %}">
+          {%- if blog != blank -%}
+            {%- for article in blog.articles -%}
+        		{%- assign art_url = article.url -%}
+                <article class="post-{{article.id}} post_nt_loop post_1 col-lg-{{col}} col-md-{{col_tb}} col-{{col_mb}} mb__40"> 
+                   <a class="wrapper_img" href="{{art_url}}">
+                      {%- assign image = article.image -%}
+                      {%- if image -%}<div class="nt_bg_lz lazyload pr_lazy_img" data-bgset="{{ image | img_url: '1x1' }}" data-ratio="{{image.aspect_ratio}}" data-sizes="auto"{% if sett_equal == false %} style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%;"{% endif %}></div>{%- endif -%}
+                   </a>
+                   <div class="post-info">
+                      <h4 class="blog-post-title"><a class="bold open" href="{{art_url}}">{{article.title}}</a></h4>
+                      {%- if show_au -%}<span class="post-author">{{ by }} <span class="bold">{{ article.author | replace_first: 'ad clnt', 'admin' }}</span></span>{%- endif -%}
+                      {%- if show_dt -%}<span class="post-time">{{ on }} <span class="bold">{{ article.published_at | time_tag: format: date }}</span></span>{%- endif -%}
+                      {%- if show_cm -%}
+                         {%- if article.comments_count > 0 %}{% assign cm_link = '#comments' %}{% else %}{% assign cm_link = '#comment_form' %}{% endif -%}
+                         .<a href="{{ art_url }}{{cm_link}}"> {{ 'blogs.comments.with_count' | t: count: article.comments_count }}</a>
+                      {%- endif -%}
+                   </div>
+                   {%- if show_cnt %}<div class="post-content">{%- if article.excerpt.size > 0  -%}{{ article.excerpt | strip_html }}{%- else -%}{{ article.content | strip_html | truncate: 118 }}{%- endif -%}</div>{% endif -%}
+                   {%- if show_rm %}<a href="{{art_url}}" class="post-readmore dib mt__5">{{ 'blogs.section.read_more' | t }}</a>{% endif -%}
+                </article>
+        	{%- endfor -%}
+          {%- else -%}
+             {%- for i in (1..3) -%}
+               <article class="post-19041994 post post_nt_loop col-md-4 col-xs-12 mb__40">
+                  <a class="wrapper_img" href="/admin/blogs"><img class="w__100 lazyload lz_op_ef" src="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20570%20320%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3C%2Fsvg%3E" data-src="https://placehold.it/570x320.png/{% cycle 'F5F5F5', 'F5F5F5', 'F5F5F5' %}/#969696?text=Best theme" alt="Best Shopify theme"></a>
+                  <div class="post-info">
+                     <h4 class="blog-post-title"><a class="bold" href="/admin/blogs">Best shopify theme</a></h4>
+                     <span class="post-author">{{ by }} <span class="bold">Andy </span></span><span class="post-time">{{ on }} <span class="bold"><time class="entry-date published updated">April 19, 1994</time></span></span>
+                  </div>
+                  <div class="post-content">We work with passion and aim at excellence. Our team does not simply satisfy with the good Shopify features, we want to create the best Shopify solutions for your business efficiency in each theme and module.</div>
+               </article>
+             {%- endfor -%}
+          {%- endif -%}
+      </div>
+      {%- if paginate.pages > 1 and use_pagination != 'none' -%}
+      <div class="products-footer tc mt__40">
+          {%- if paginate.next.is_link and use_pagination == 'more' and layout_des != '2' -%}
+          {%- if section.settings.use_bar_lm -%}{%- assign results_count = blog.articles_count -%}
+          <div class="js_progress_bar" data-tt='{{results_count}}'>
+            {%- assign current_pr_size = blog.articles.size | plus:paginate.current_offset -%}
+             <p class="mg__0 progress_txt fs__15">{{ 'blogs.section.bar_with_count_html' | t:current_count:current_pr_size,total_count:results_count}}</p>
+            <div class="progress_bar pr oh"><div class="current_bar pa t__0 r__0 l__0 b__0" style="width: {{current_pr_size | times:100.0 | divided_by: results_count}}%"></div></div>
+          </div>
+          {%- endif -%}
+          <a class="se_cat_lm pr nt_cat_lm button button_{{section.settings.btn_style}} br_rd_{{section.settings.btn_rd}} btn_icon_{{section.settings.btn_icon}}" data-id={{sid}} data-get='{{ blog.url }}{{ paginate.next.url }}' href="{{ blog.url }}">{{ 'blogs.section.load_more' | t }}</a>
+          {%- else -%}
+          <a class="pr button view_more js_add_loading button_{{section.settings.btn_style}} br_rd_{{section.settings.btn_rd}} btn_icon_{{section.settings.btn_icon}}" href="{{ blog.url }}">{{ 'blogs.section.view_all' | t }}</a>
+          {%- endif -%}
+      </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+{%- endpaginate -%}
+{%- schema -%}
+  {
+    "name": "Blog posts",
+    "class": "nt_section type_featured_blog type_carousel",
+    "settings": [
+      {
+        "type": "header",
+        "content": "== Title Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Blog posts"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text",
+        "default": "Sub Text"
+      },     
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "select",
+        "id": "layout_des",
+        "options": [
+          {
+            "value": "1",
+            "label": "Grid"
+          },
+          {
+            "value": "2",
+            "label": "Slider"
+          }
+        ],
+        "label": "Layout design",
+        "default": "1"
+      },      
+      {
+        "id": "blog",
+        "type": "blog",
+        "label": "Blog"
+      },
+      {
+        "type": "range",
+        "id": "limit",
+        "min": 1,
+        "max": 50,
+        "step": 1,
+        "label": "Articles per page",
+        "info": "Number of articles per page",
+        "default": 8
+      },
+      {
+        "type": "select",
+        "id": "use_pagination",
+        "label": "Pagination",
+        "info": "'Load more' not active when use layout silder",
+        "default": "none",
+        "options": [
+          {
+            "value": "none",
+            "label": "None"
+          },
+          {
+            "value": "more",
+            "label": "Load more button"
+          },
+          {
+            "value": "view-all",
+            "label": "'View all' button"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "use_bar_lm",
+        "label": "Show progress bar?",
+        "info": "Only active when you use 'Load more'",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "btn_rd",
+        "label": "Button round?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "btn_icon",
+        "label": "Button icon?",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "btn_style",
+        "label": "Button style",
+        "default": "default",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "primary",
+            "label": "Primary"
+          },
+          {
+            "value": "dark",
+            "label": "Dark"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "date",
+        "options": [
+          {
+            "value": "abbreviated_date",
+            "label": "Apr 19, 1994"
+          },
+          {
+            "value": "basic",
+            "label": "4/19/1994"
+          },
+          {
+            "value": "date",
+            "label": "April 19, 1994"
+          }
+        ],
+        "label": "Date format",
+        "info":"different format options display for various languages.",
+        "default": "date"
+      },
+      {
+        "type": "select",
+        "id": "col_pr",
+        "label": "Articles columns (desktop)",
+        "info": "How many articles you want to show per row",
+        "default": "4",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr_tb",
+        "label": "Articles columns (tablet)",
+        "default": "4",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr_mb",
+        "label": "Articles columns (mobile)",
+        "default": "12",
+        "options": [
+          {
+            "value": "12",
+            "label": "1"
+          },
+          {
+            "value": "6",
+            "label": "2"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cnt",
+        "label": "Show short content?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_au",
+        "label": "Show author?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_dt",
+        "label": "Show date?",
+        "default": true
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cm",
+        "label": "Show comment?",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "show_rm",
+        "label": "Show readmore?",
+        "default": false
+      },      
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio4_3",
+        "info": "Aspect Ratio Custom will settings in General panel.",
+        "options": [
+          {
+            "group": "Landscape",
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio4_3",
+            "label": "4:3"
+          },
+          {
+            "group": "Squared",
+            "value": "ratio1_1",
+            "label": "1:1"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio2_3",
+            "label": "2:3"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio1_2",
+            "label": "1:2"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_size",
+        "label": "Image Size",
+        "default": "cover",
+        "options": [
+          {
+            "value": "cover",
+            "label": "Full"
+          },
+          {
+            "value": "contain",
+            "label": "Auto"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "info": "The first value is the horizontal position and the second value is the vertical.",
+        "options": [
+          {
+            "value": "default",
+            "label": "Default"
+          },
+          {
+            "value": "Left Top",
+            "label": "Left Top"
+          },
+          {
+            "value": "Left Center",
+            "label": "Left Center"
+          },
+          {
+            "value": "Left Bottom",
+            "label": "Left Bottom"
+          },
+          {
+            "value": "Right Top",
+            "label": "Right Top"
+          },
+          {
+            "value": "Right Center",
+            "label": "Right Center"
+          },
+          {
+            "value": "Right Bottom",
+            "label": "Right Bottom"
+          },
+          {
+            "value": "Center Top",
+            "label": "Center Top"
+          },
+          {
+            "value": "Center Center",
+            "label": "Center Center"
+          },
+          {
+            "value": "Center Bottom",
+            "label": "Center Bottom"
+          }
+        ],
+        "label": "Image Position",
+        "default": "Center Center"
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "options": [
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "color",
+        "id": "cl_bg",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,30px,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }
+    ],
+    "presets": [
+      {
+        "name": "1. Blog posts",
+        "category": "Blog"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,8 @@
+{%- liquid
+  layout none
+  capture html
+	section 'hcat-nav'
+  endcapture
+  assign arr = html | split:'[shopify]' 
+  echo arr[1] -%}
+

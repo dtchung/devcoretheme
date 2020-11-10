@@ -1,0 +1,120 @@
+.upsell-wrapper {
+
+  z-index: 99999;
+  background: rgba(0,0,0,.8);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  
+}
+
+.upsell-modal {
+  
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    height: 450px;
+    width: 1000px;
+    margin: -225px 0 0 -500px;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 20px;
+
+}
+
+strong {
+  font-weight: bold;
+  font-size: 21px;
+  text-transform: uppercase;
+  color: #000;
+}
+
+p {
+  font-size: 13px;
+  color: #000;
+}
+.modal-close {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  text-align: right;
+  width: 100%;
+}
+
+.modal-close a {
+  color: #000;
+  font-size: 13px;
+}
+/* PRODUCT GRID */
+
+.upsell-grid {
+  margin: 0;
+  padding:0;
+  list-style: none;
+}
+.upsell-grid li {
+  width: 25%;
+ float: left;
+  box-sizing: border-box;
+  padding:5px;
+  font-size: 13px;
+  text-align: center;
+}
+.upsell-grid li strong{
+ font-size: 13px; 
+}
+
+/* BUTTONS */
+
+.upsell-buttons {
+  text-align: right;
+  padding-top: 20px;
+}
+.no-thanks {
+	font-size: 13px;
+  color: #000;
+  text-decoration: underline;
+  margin-right: 28px;
+}
+.upsell-checkout, .upsell-checkout:hover {
+	font-size: 13px;
+  color: #fff;
+  text-decoration: none;
+  background: #000;
+  padding: 5px 10px;tt
+}
+
+@media (max-width: 767px) {  
+  // mobile
+  .upsell-wrapper {
+    z-index: 99999;
+    background: rgba(0,0,0,.8);
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .upsell-modal {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      height: 450px;
+      width: 300px;
+      margin: -225px 0 0 -150px;
+      background: #fff;
+      box-sizing: border-box;
+      padding: 20px;
+
+  }
+  .upsell-grid li {
+    width: 100%;
+    float: left;
+    box-sizing: border-box;
+    padding:5px;
+    font-size: 13px;
+    text-align: center;
+  }
+}

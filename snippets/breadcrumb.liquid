@@ -1,0 +1,95 @@
+{% unless template == 'index' %}
+{% assign blog_width = 'container' %}
+
+
+{% if template contains 'blog' %}
+  {% if settings.blog_layout_width == 'blog_width_out' %}
+    {% if settings.use_blog_left_sidebar == false and settings.use_blog_right_sidebar == false %}
+      {% assign blog_width = 'container' %}
+    {% else %}
+      {% assign blog_width = 'container-box' %}
+    {% endif %}
+  {% else %}
+      {% assign blog_width = 'container' %}
+  {% endif %}
+{% endif %}
+{% if template contains 'article' %}
+  {% if settings.blog_layout_width == 'blog_width_out' %}
+    {% if settings.use_blog_left_sidebar == false and settings.use_blog_right_sidebar == false %}
+      {% assign blog_width = 'container' %}
+    {% else %}
+      {% assign blog_width = 'container-box' %}
+    {% endif %}
+  {% else %}
+      {% assign blog_width = 'container' %}
+  {% endif %}
+{% endif %}
+
+<div class="breadcrumbs">
+                <a href="/" title="Home">Home</a> / 
+                  
+                {% assign heading ="" %}  
+                {% if template contains 'product' %}
+                    {% if collection %}
+                      {% if collection.handle %}
+                        {% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+  						
+  						<span class="current"> {{ collection.title | link_to: url }} </span>
+                        
+                      {% endif %}
+                    {%else%}
+                        {{ product.type }}
+                        {% assign heading = product.type %} 
+                  
+                        {% assign product_collection = product.collections.first %}
+                        {% if product_collection %}
+                            {{product_collection.title}}
+                  			{% assign heading = heading | append: product_collection.title %} 
+                        {% endif %}
+                    {% endif %}
+
+  					<span class="current"> {{ product.title }} </span>
+               		 
+                  
+                {% elsif template contains 'collection'%}
+                    {% if current_tags %}
+                        {% capture url %}/collections/{{ collection.handle }}{% endcapture %}
+
+  						 <span class="current"> {{ collection.title | link_to: url }} </span>
+
+                    {% else %}
+                        {%if collection.handle != 'all'%} 
+  
+  							<span class="current"> {{collection.title}} </span>
+  
+  						{%endif%}
+                    {% endif %}
+
+                {% elsif template == 'blog' %}
+                    {% if current_tags %}  
+  						<span class="current">  {{ blog.title | link_to: blog.url }} </span>                     
+                    {% else %}
+  						<span class="current"> {{ 'Blog'| link_to: blog.url}} </span>                  		
+                    {% endif %}
+                {% elsif template == 'article' %}
+  					<span class="current"> {{ blog.title | link_to: blog.url }} / {{ article.title }} </span>
+                   
+                {% elsif template contains 'page' %}
+                    {% capture url %}/pages/{{ page.handle }}{% endcapture %}                 	
+                    {% assign name = page.title %}
+  					<span class="current"> {{ name | link_to: url}} </span>
+                    
+                {% elsif template contains 'customers' %}
+                	{% capture url %}/account/login{% endcapture %}
+                    {% assign name = template | split:'/' | last %}
+                  	{% if name == 'login'%} {% assign name = 'LOGIN OF GREATE AN ACCOUNT' %}{% endif %}
+  					<span class="current"> {{ name | link_to: url}} </span>
+                    
+                {% else %}
+  					<span class="current"> {{ template }} </span>
+                    
+                {% endif %}
+            
+</div>        
+
+{% endunless %}

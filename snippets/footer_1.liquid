@@ -1,0 +1,200 @@
+<!--Footer-->
+
+  <div class="footer">    
+      <div class="main-footer">
+        <div class="container">
+        	<div class="row">
+          {%- for block in section.blocks -%}
+              <div class="col-lg-{{block.settings.cl}} col-md-{{block.settings.cl_tb}} col-{{block.settings.cl_mb}} mb__50 order-lg-{{forloop.index}} order-{{block.settings.order}}" {{ block.shopify_attributes }}>
+                  {%- case block.type -%}
+                     {%- when 'logo' -%}
+                      {%- assign image = block.settings.image -%}
+                          <aside id="block_{{block.id}}" class="widget widget_text widget_logo">
+                         {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30{% if image != blank %} dn_md{% endif %}"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                             <div class="textwidget widget_footer">
+                                <div class="footer-contact">
+                                   	{%- if image != blank -%}<p><a class="db" href="/">{%- assign lg_w = block.settings.logo_width -%}
+                                	{%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                                	<img class="w__100 mb__15 lazyload lz_op_ef" src="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20{{image.width}}%20{{image.height}}%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3C%2Fsvg%3E" data-src="{{ img_url }}" data-widths="[{{lg_w}}, {{lg_w | times:2}}]" data-sizes="auto" alt="{{ image.alt | default: shop.name | escape}}" style="max-width: {{ lg_w }}px"></a></p>{%- endif -%}
+                                   {{- block.settings.content -}}
+                                   {% if section.settings.footer_use_social_link %}
+                                      <ul class="list-socials">
+                                        {% if settings.footer_social_twitter_enable %}
+                                              <li>
+                                                  <a class="twitter" target="_blank" href="{{settings.footer_social_twitter_link}}" title="{{settings.footer_social_twitter_text}}"><i class="fa fa-twitter"></i></a>
+                                              </li>
+                                          {% endif %}
+                                          {% if settings.footer_social_facebook_enable %}
+                                              <li>
+                                                  <a class="facebook" target="_blank" href="{{settings.footer_social_facebook_link}}" title="{{settings.footer_social_facebook_text}}"><i class="fa fa-facebook"></i></a>
+                                              <li>
+                                          {% endif %}
+                                          {% if settings.footer_social_google_enable %}
+                                              <li>
+                                                  <a class="google" target="_blank" href="{{settings.footer_social_google_link}}" title="{{settings.footer_social_google_text}}"><i class="fa fa-google-plus"></i></a>
+                                              </li>
+                                          {% endif %}
+                                          {% if settings.footer_social_pinterest_enable %}
+                                              <li>
+                                                  <a class="pinterest" target="_blank" href="{{settings.footer_social_pinterest_link}}" title="{{settings.footer_social_pinterest_text}}"><i class="fa fa-pinterest-p"></i></a>
+                                              </li>
+                                          {% endif %}
+                                          {% if settings.footer_social_instargram_enable %}
+                                              <li>
+                                                  <a class="instagram" target="_blank" href="{{settings.footer_social_instargram_link}}" title="{{settings.footer_social_instargram_text}}"><i class="fa fa-instagram"></i></a>
+                                              </li>
+                                          {% endif %}
+
+                                          {% if settings.footer_social_tumblr_enable %}
+                                              <li>
+                                                  <a class="tumblr" target="_blank" href="{{settings.social_tumblr_link}}" title="{{settings.footer_social_tumblr_text}}"><i class="fa fa-tumblr-square"></i></a>
+                                              </li>
+                                          {% endif %}
+                                          {% if settings.footer_social_snapchat_enable %}
+                                              <li>
+                                                  <a class="tumblr" target="_blank" href="{{settings.social_snapchat_link}}" title="{{settings.footer_social_snapchat_text}}"><i class="fa fa-snapchat-ghost"></i></a>
+                                              </li>
+                                          {% endif %}
+                                          {% if settings.footer_social_youtube_enable %}
+                                              <li>
+                                                  <a class="tumblr" target="_blank" href="{{settings.social_youtube_link}}" title="{{settings.footer_social_youtube_text}}"><i class="fa fa-youtube-square"></i></a>
+                                              </li>
+                                          {% endif %}
+                                          {% if settings.footer_social_vimeo_enable %}
+                                              <li>
+                                                  <a class="tumblr" target="_blank" href="{{settings.social_vimeo_link}}" title="{{settings.footer_social_vimeo_text}}"><i class="fa fa-vimeo "></i></a>
+                                              </li>
+                                          {% endif %}
+                                      </ul>
+                                      {% endif %}
+                                </div>
+                             </div>
+                          </aside>
+                     {%- when 'mail' -%}
+                          <aside id="block_{{block.id}}" class="widget widget_text">
+                             {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                             <div class="textwidget widget_footer newl_des_{{block.settings.newl_des}}">
+                                <p>{{block.settings.sub_title}}</p>
+                                {%- form 'customer', class:'mc4wp-form pr z_100' -%}
+                                  <input type="hidden" name="contact[tags]" value="newsletter">
+                                  <div class="mc4wp-form-fields">
+                                     <div class="signup-newsletter-form  {{class}}">
+                                        <div class="col_email"><input type="email" name="contact[email]" placeholder="{{ 'general.newsletter_form.email_placeholder' | t }}"  value="{% if customer %}{{ customer.email }}{% endif %}" class="{{class_ip}} input-text" required="required"></div>
+                                        <div class="col-auto"><button type="submit" class="submit-btn truncate{% if settings.checkbox_mail %} mail_agree pr{% endif %}"><span>{{ 'general.newsletter_form.submit' | t }}</span></button></div>
+                                     </div>
+                                    {%- if settings.checkbox_mail -%}{%- render 'conditions_mail',html:'p',margin:'mt__15',stt_link:settings.link_mail,sid:sid -%}{%- endif -%}
+                                  </div>
+                                   <div class="mc4wp-response">
+                                      {%- if form.posted_successfully? -%}<div class="shopify-message"><i class="las la-check"></i>{{ 'general.newsletter_form.confirmation' | t }}</div>{%- elsif form.errors -%}<div class="shopify-error"><i class="las la-exclamation-triangle"></i>{{ form.errors | default_errors }}</div>{%- endif -%}
+                                   </div>
+                               {%- endform -%}
+                                <ul class="list-payment">
+                                  <li><a href="#"><img src="{{ block.settings.paypal1 }}" alt=""></a></li>
+                                  <li><a href="#"><img src="{{ block.settings.paypal2 }}" alt=""></a></li>
+                                  <li><a href="#"><img src="{{ block.settings.paypal3 }}" alt=""></a></li>
+                                  <li><a href="#"><img src="{{ block.settings.paypal4 }}" alt=""></a></li>
+                               </ul>
+                             </div>
+                          </aside>
+                  {%- when 'collection' -%}
+                      {%- liquid
+                       assign on_sale_txt = 'products.product.on_sale' | t
+                       assign save_js = 'products.product.save_js' | t: saved_amount:'saved_amount' -%}
+                      <aside id="block_{{block.id}}" class="widget widget_product_list">
+                        {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                         {%- if block.settings.collection == blank -%}
+                            <p class="mg__0 mb__30">{{ 'homepage.onboarding.no_content' | t }}</p>
+                         {%- else -%}
+                         <div class="widget_footer product_list_widget">
+                            {%- for product in collections[block.settings.collection].products limit: block.settings.limit -%}
+                               {%- render 'pr_group_loop',product:product,c:collections[block.settings.collection],on_sale_txt:on_sale_txt,save_js:save_js -%}
+                            {%- endfor -%}
+                         </div>
+                         {%- endif -%}
+                      </aside>
+                  {%- when 'post' -%}{%- assign date = block.settings.date -%}
+                      <aside id="block_{{block.id}}" class="widget widget_post_list">
+                        {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                         {%- if block.settings.blog == blank -%}
+                            <p class="mg__0 mb__30">{{ 'homepage.onboarding.no_content' | t }}</p>
+                         {%- else -%}
+                         <div class="widget_footer post_list_widget">
+                            {%- for article in blogs[block.settings.blog].articles limit: block.settings.limit -%}
+                               {%- render 'ar_group_loop', article:article, date:date -%}
+                            {%- endfor -%}
+                         </div>
+                         {%- endif -%}
+                      </aside>
+                  {%- when 'instagram' -%}{%- assign col = block.settings.col_pr -%}{%- assign col_tb = block.settings.col_pr_tb -%}{%- assign col_mb = block.settings.col_pr_mb -%}
+                      <aside id="block_{{block.id}}" class="widget widget_instagram">
+                        {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                         <div class="widget_footer nt_instagram_wrap row equal_nt ins_spaces_{{block.settings.space}} ins_rounded_{{block.settings.rounded_ins}} nt_cover ratio1_1 position_8 js_nt_ist" data-id='{{col}}{{col_tb}}{{col_mb}}{{block.settings.limit}}{{block.settings.open_link}}' data-cl='{{col}}' data-cltb='{{col_tb}}' data-clmb='{{col_mb}}' data-acc='{{block.settings.acc2 | default:settings.global_acc}}' data-limit='{{block.settings.limit }}' data-target='{{block.settings.open_link}}'><div class="lds_bginfinity pr"></div></div>
+                      </aside>
+				  {%- when 'text' -%}
+                          <aside id="block_{{block.id}}" class="widget widget_text">
+                             {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                             <div class="textwidget widget_footer">{{block.settings.content}}</div>
+                          </aside>
+
+                   {%- when 'html' -%}
+                          <aside id="block_{{block.id}}" class="widget widget_text">
+                             {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                             <div class="textwidget widget_footer">{{block.settings.content}}</div>
+                          </aside>
+
+                    {%- else -%}
+                          <aside id="block_{{block.id}}" class="widget widget_nav_menu">
+                             {%- if block.settings.title != blank -%}<h3 class="widget-title fwsb flex al_center fl_between fs__16 mg__0 mb__30"><span class="txt_title">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></h3>{%- endif -%}
+                             <div class="menu_footer widget_footer">
+                              {%- assign menu = block.settings.menu -%}
+                              {%- if menu != blank -%}
+                                <ul class="menu">
+                                  {%- for link in linklists[menu].links -%}
+                                   <li class="menu-item{% if link.active %} current-menu-item{% endif %}"><a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a></li>
+                                   {%- endfor -%}
+                                </ul>
+                                {%- else -%}Pick a linked list to show here.
+                                {%- endif -%}
+                             </div>
+                          </aside>
+
+                  {%- endcase -%}
+              </div>
+              {%- endfor -%}
+        </div>
+        </div>
+      </div>
+      <div class="footer-note">
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 left-content">
+              <div class="coppy-right">
+                <h3 class="content">{{section.settings.footer_copyright_text}}</h3>
+              </div>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4 right-content">
+              {%- assign menu = block.settings.footer_linklist -%}
+              {%- if menu != blank -%}
+                <ul id="footer-menu" class="clearfix">
+                  {%- for link in linklists[menu].links -%}
+                    <li class="menu-item{% if link.active %} current-menu-item{% endif %}">
+                      <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- else -%}
+              		<ul id="footer-menu" class="clearfix">
+                      {%- for link in linklists['footer'].links -%}
+                        <li class="menu-item{% if link.active %} current-menu-item{% endif %}">
+                          <a href="{{ link.url }}">{{ link.title | split: '[' | first }}</a>
+                        </li>
+                      {%- endfor -%}
+                    </ul>
+              {%- endif -%}
+            </div>
+          </div>
+      	</div>
+      </div>
+  </div>
+
+<!--/Footer-->

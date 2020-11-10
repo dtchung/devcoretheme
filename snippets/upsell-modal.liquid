@@ -1,0 +1,67 @@
+<div class="upsell-wrapper">
+  <div class="upsell-modal">
+    <div class="modal-close">
+      <a href="#" class="close-upsell">X</a>
+   	</div>
+    <strong>DON'T FORGET THE STOCKING STUFFERS!</strong>
+    <p>We’ve gathered some of our favorite stocking stuffers for this holiday season. Get some before it is too late!</p>
+    <ul class="upsell-grid">
+    {% comment %}
+    this can be improved by adding theme settings and looping all handle, but to keep it simple I hard coded the values.
+    {% endcomment %}
+      <li data-handle="dj-snake-bracelet">
+      	{{ 'ajax-loader.gif' | asset_url | img_tag }}
+      </li>
+      <li data-handle="blasterjaxx-bracelet">
+      	{{ 'ajax-loader.gif' | asset_url | img_tag }}
+      </li>
+      <li data-handle="adventure-club">
+      	{{ 'ajax-loader.gif' | asset_url | img_tag }}
+      </li>
+      <li data-handle="borgore">
+      	{{ 'ajax-loader.gif' | asset_url | img_tag }}
+      </li>
+    </ul>
+    <div style="clear:both;"></div>
+    <div class="upsell-buttons">
+      <a href="#" class="no-thanks close-upsell">No thanks!</a>
+      <a href="/checkout" class="upsell-checkout">CHECKOUT</a>
+    </div>
+  </div>
+</div>
+<script>
+  jQuery(document).ready(function(){
+    jQuery('.close-upsell').click(function(){
+    	jQuery('.upsell-wrapper').fadeOut(300);
+    });
+    
+    function go_shopify_product(handle){
+      var product = '';
+      jQuery.ajax({
+        url: '/products/'+handle+'.js',
+        dataType: 'json',
+        async: false,
+        success: function(data) {
+          product = data;
+        }
+      });
+      return product;
+    }
+    
+    jQuery('.upsell-grid li').each(function(i, items_list){
+      	var productHTML 	= '';
+      	var product_handle 	= jQuery(this).data('handle');
+      	var product 		= go_shopify_product(product_handle);
+      	var price 			= Shopify.formatMoney(product.price, "{{ shop.money_with_currency_format }}");
+        productHTML += '<a href="'+product.url +'">';
+        productHTML += '<image src="'+product.featured_image +'" />';
+        productHTML += product.title+'<br />';
+        productHTML += '<strong>'+price+'</strong>';
+        productHTML += '</a>';
+      
+      	jQuery(this).html(productHTML).fadeIn(1000);
+    });
+    
+     $('head').append('<link rel="stylesheet" href="{{ 'upsell-modal.css' | asset_url }}" type="text/css" />');
+  });
+</script>

@@ -1,0 +1,104 @@
+<!-- Created by Andy 4/08/2017 -->
+
+<div class="main-content shop-page contact-page">
+  <div class="container">
+    {% include 'breadcrumb'%}
+    
+    <div class="row content-form ">
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <div class="contact-form">
+          {% form 'contact', class:'form-contact' %}	
+
+              {% if form.posted_successfully? %}
+              <div class="successForm feedback">
+                {{ 'contact.form.post_success' | t }}
+              </div>
+              {% endif %}
+              {% if form.errors %}
+              <div class="errorForm feedback">                
+                <p>Your contact form has {{ form.errors | size | pluralize: "an error", "a few errors" }}. To submit your form, make the following changes and try again:</p>
+                {% for field in form.errors %}
+                <p>The {{ field | capitalize | replace: 'Body', 'Message' }} field {{ form.errors.messages[field] }}.</p>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <h4 class="main-title">{{settings.left_title_block}}</h4>
+              <p class="des">{{settings.left_description_block}}</p>
+              <div class="row">
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <span class="label-text">{{'contact.form.name' | t}} *</span>
+                  {% assign name_attr = 'contact.form.name' | t | handle %}
+                  <input placeholder="" class="input-info" id="name" required name="contact[{{ name_attr }}]"  type="text" value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{{ customer.first_name }}{% endif %}"/>                  
+                </div>
+                <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                  <span class="label-text">{{ 'contact.form.email' | t }} *</span>                 
+                  <input placeholder="" value="{% if form.email %}{{ form.email }}{% elsif customer %}{{ customer.email }}{% endif %}" required name="contact[email]" class="input-info" id="email" type="text"/>
+                </div>
+              </div>
+              <span class="label-text">{{'contact.form.phone' | t}}</span>              
+          	  {% assign name_attr = 'contact.form.phone' | t | handle %}
+              <input placeholder="" name="contact[{{ name_attr }}]" value="{% if form[name_attr] %}{{ form[name_attr] }}{% elsif customer %}{% for address in customer.addresses %} {{ customer_address.phone }}{% endfor %}{% endif %}" class="input-info" id="phone" type="text"/>
+          
+              <span class="label-text">{{'contact.form.message' | t}} *</span>              
+              <textarea placeholder="" rows="8" class="input-info input-note" name="contact[body]" required id="message">{% if form.body %}{{ form.body }}{% endif %}</textarea>
+              <div class="group-button">                
+                <button class="button submit" type="submit">{{'contact.form.submit'|t}}</button>
+              </div>
+          {% endform %}
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+        <!-- Map Element -->
+          {% if settings.use_contact_map %}
+            <div class="map">              
+                {{ settings.map_iframe }}              
+            </div>
+          {% endif %}
+        <!-- End Map Element -->
+        
+        <div class="information-form">
+          <h4 class=" main-title">{{settings.right_title_block}}</h4>
+          <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+              <h5 class="title">{{settings.right_desc_block}}</h5>
+              <ul class="list-info">
+                <li>
+                  <div class="icon"><i class="fa {{settings.item1_icon_contact}}" aria-hidden="true"></i></div>
+                  <div class="info">
+                    <h5 class="subtitle">{{settings.item1_title_contact}} </h5>
+                    <a href="#" class="des">{{settings.desc1_item1_title_contact}}</a>
+                  </div>
+                </li>
+                <li>
+                  <div class="icon"><i class="fa {{settings.item2_icon_contact}}" aria-hidden="true"></i></div>
+                  <div class="info">
+                    <h5 class="subtitle">{{settings.item2_title_contact}}</h5>
+                    <p class="des">{{settings.desc1_item2_title_contact}}</p>
+                  </div>
+                </li>
+                <li>
+                  <div class="icon"><i class="fa {{settings.item3_icon_contact}}" aria-hidden="true"></i></div>
+                  <div class="info">
+                    <h5 class="subtitle">{{settings.item3_title_contact}}</h5>
+                    <p class="des">{{settings.desc1_item3_title_contact}}</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+              <h5 class="title">{{settings.right_title_block2}}</h5>
+              <ul class="time-work">
+                <li><div class="day">{{settings.right_title_monday}}:</div><div class="time">{{settings.right_value_monday}}</div></li>
+                <li><div class="day">{{settings.right_title_tuesday}}:</div><div class="time">{{settings.right_value_tuesday}}</div></li>
+                <li><div class="day">{{settings.right_title_wendnesday}}:</div><div class="time">{{settings.right_value_wendnesday}}</div></li>
+                <li><div class="day">{{settings.right_title_thursday}}:</div><div class="time">{{settings.right_value_thursday}}</div></li>
+                <li><div class="day">{{settings.right_title_friday}}:</div><div class="time">{{settings.right_value_friday}}</div></li>
+                <li><div class="day">{{settings.right_title_saturday}}:</div><div class="time">{{settings.right_value_saturday}}</div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

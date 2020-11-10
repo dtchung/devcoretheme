@@ -1,0 +1,770 @@
+{% if section.settings.use_slideshow %}
+<div class="{{section.settings.layout}}">
+  {% assign speed = section.settings.autoplay_slide_time | times: 1000.0 %}    
+  {% assign effect_time = section.settings.autoplay_effect_time | times: 1000.0 %}   
+  <div class="vertical-center slider" style="display:none;{% if section.settings.margin_top_slidershow!=blank %}margin-top:{{section.settings.margin_top_slidershow}}px; {% endif %} {% if section.settings.margin_bottom_slidershow !=blank %}margin-bottom:{{section.settings.margin_bottom_slidershow}}px; {% endif %} {% if section.settings.cl_bg %} background-color:{{section.settings.cl_bg}} {% endif %}" data-slick='{"dots": {{section.settings.dot_enable}}, "autoplay": {{section.settings.use_slideshow_autoplay}}, "autoplaySpeed": {{speed}}, "pauseOnHover": {{section.settings.pause_slide_hover}}, "arrows": {{section.settings.nav_enable}}, "vertical": false, "fade": false, "cssEase": "{{section.settings.effect_style}}", "speed": {{effect_time}}, "lazyLoad":"ondemand","rtl":{{section.settings.rtl_enable}},"adaptiveHeight":false, "variableWidth": {{section.settings.variable_width_enable}},"mobileFirst":false}'>
+    {% liquid 
+        assign section_blocks = section.blocks  
+    	assign size = "1170x473"
+    	assign no-img = "https://placehold.it/1170x473.png/f5f5f5"
+    	assign index = 1
+        assign arr_blocks_img = section_blocks | where: "type", 'img' 
+    %}
+    {% if arr_blocks_img.size > 0 %}  
+    	{%- for block in arr_blocks_img -%}
+    		{% if block.type == 'img' %} 
+    			{% assign image = block.settings.image_sl %}
+    			{% assign url = block.settings.link_img %}
+    			{% assign open_link = block.settings.open_link %}
+    
+    			<div class="content-item">
+                    {% if image != blank %}    
+                  		<div><a target="{{open_link}}" href="{% if url %}{{url}} {% else %} # {% endif %}"><img class="lazyload"  data-src="{{ image | img_url: size}}" ></a></div>
+                    {% else %}                  		
+                  		<div><a target="{{open_link}}" href="{% if url %}{{url}} {% else %} # {% endif %}"><img class="lazyload" data-src="{{ no-img}}"></a></div>
+                    {% endif %}
+                	<div class="wrapper_caption">
+                  		<div class="caption" style="text-align:{{block.settings.txt_align}}; color:{{block.settings.cl_overlay}}; opacity:{{block.settings.cl_opacity | times:100}}">
+                          <div class="{{block.settings.ani_txt}}" style="top:{{block.settings.cap_v_pos}}%; left:{{block.settings.cap_h_pos}}%">                            	
+                            	{% for block in section_blocks offset:index %}
+                            	   {% assign index = index|plus:1 %}                            		
+                                   {%- case block.type -%}
+                                      {% when 'hd' %}
+                                         <h3 id="b_{{block.id}}" class="slide_item_h3" >{{block.settings.title}}</h3>
+                                      {% when 'subhd' %}
+                                         <h4 id="b_{{block.id}}" class="slide_item_h4 {{block.settings.font}}{% if block.settings.hide %} dn db_md{% endif %}">{{block.settings.title}}</h4>
+                                      {% when 'txt' %}
+                                         <p id="b_{{block.id}}" class="slide_item_p {% if block.settings.hide %} dn db_md{% endif %}">{{block.settings.title}}</p> 
+                                      {% when 'btn' %}
+                                         {%- if block.settings.btn_link != blank and block.settings.title != blank -%}<a id="b_{{block.id}}" class="button  round_{{block.settings.btn_round}} " href="{{block.settings.btn_link}}" target="{{open_link}}" style="padding:{{block.settings.pd}}; border:1px solid {{block.settings.cl_bd}}; background-color: {{block.settings.cl_bg}}; color:{{block.settings.cl_txt}}; font-size:{{block.settings.fs_text}}px; font-weight:{{block.settings.fw_text}}; letter-spacing:{{block.settings.ls_text}}px;">{{block.settings.title}}</a>{%- endif -%}
+                                         {%- if block.settings.btn_link2 != blank and block.settings.title2 != blank -%}<a id="b_{{block.id}}" class="button  round_{{block.settings.btn_round}} " href="{{block.settings.btn_link2}}" target="{{open_link}}" style="padding:{{block.settings.pd}}; border:1px solid {{block.settings.cl_bd}}; background-color: {{block.settings.cl_bg}}; color:{{block.settings.cl_txt}}; font-size:{{block.settings.fs_text}}px; font-weight:{{block.settings.fw_text}}; letter-spacing:{{block.settings.ls_text}}px;">{{block.settings.title2}}</a>{%- endif -%}
+                                      {% when 'html' %}
+                                         <div id="b_{{block.id}}" class="slide_item_html" >{{block.settings.html}}</div>
+                                      {% when 'space' %}
+                                         <div id="b_{{block.id}}" class="slide_item_space" style="height:{{block.settings.sp}}px"></div>
+                                      {% else %}                            				
+                            				{%- break -%}
+                                   {%- endcase -%}
+                                {%- endfor -%}
+                          </div>
+                      </div>
+                  </div>
+                </div>  
+    		{% else %}
+    			
+    		{% endif %}
+    	{% endfor %}
+    {% else %}
+
+    {% endif %}     
+  </div>
+</div>
+<script src="{{ 'section.slideshow.js' | asset_url }}" type="text/javascript"></script>
+{% endif %}
+{% schema %}
+  {
+    "name": "Slideshow",   
+	"max_blocks": 30,
+	"class":"slideshow",
+    "settings": [
+		{
+          "type": "header",
+          "content": "== Slider Settings"
+        },
+		{
+          "type": "checkbox",
+          "id": "use_slideshow",
+          "label": "Use slideshow",
+          "default": true
+        },
+        {
+          "type": "range",
+          "id": "autoplay_effect_time",
+          "min": 0.1,
+          "max": 10,
+          "step": 0.1,
+          "label": "Slide/Fade animation speed.",
+          "unit": "sec",
+          "default": 0.8
+        },
+        {
+          "type": "select",
+          "id": "effect_style",
+          "label": "CSS3 animation",
+          "default": "ease",
+          "options": [
+            {
+              "value": "linear",
+              "label": "Linear"
+            },
+            {
+              "value": "ease",
+              "label": "Ease"
+            },
+            {
+              "value": "ease-in",
+              "label": "Ease-in"
+            },
+            {
+              "value": "ease-out",
+              "label": "Ease-out"
+            },
+            {
+              "value": "ease-in-out",
+              "label": "Ease-in-out"
+            },
+            {
+              "value": "step-start",
+              "label": "Step-start"
+            },
+            {
+              "value": "step-end",
+              "label": "Step-end"
+            }
+          ]
+        },
+		{
+          "type": "checkbox",
+          "id": "loop",
+          "label": "Use Loop?",
+          "info": "Infinity loop. Duplicate last and first items to get loop illusion.",
+          "default": false
+        },
+		{
+          "type": "checkbox",
+          "id": "use_slideshow_autoplay",
+          "label": "Use autoplay for slider",
+          "default": false
+        },
+        {
+          "type": "range",
+          "id": "autoplay_slide_time",
+          "min": 1,
+          "max": 30,
+          "step": 0.5,
+          "label": "Autoplay Speed in second.",
+          "unit": "sec",
+          "default": 5
+        },
+        
+	    {
+          "type": "checkbox",
+          "id": "pause_slide_hover",
+          "label": "Pause Autoplay On Hover?",
+          "info": "Auto-playing will pause when the user hovers over the carousel.",
+          "default": true
+        },
+        {
+          "type": "header",
+          "content": "== Prev Next Button, Page Dot Settings"
+        },        
+        {
+          "type": "paragraph",
+          "content": "Prev Next Button:"
+        },
+        {
+          "type": "checkbox",
+          "id": "nav_enable",
+          "label": "Enable Prev Next Button?",
+          "info": "Creates and enables previous & next buttons.",
+          "default": false
+        },
+        {
+          "type": "checkbox",
+          "id": "dot_enable",
+          "label": "Enable dot?",
+          "info": "Creates and enables dot.",
+          "default": false
+        },
+		{
+          "type": "header",
+          "content": "== Design Options"
+        },
+		{
+          "type": "select",
+          "id": "layout",
+          "default": "container",
+          "options": [
+           {
+              "value": "container",
+              "label": "Container"
+           },
+           {
+              "value": "full-width",
+              "label": "Full Width"
+            }
+          ],
+          "label": "Layout"
+        },
+        {
+          "type": "color",
+          "id": "cl_bg",
+          "label": "Background Color",
+          "default": "#f5f5f5",
+          "info": "only active when you use layout 'Container'"
+        },
+        {
+          "type": "checkbox",
+          "id": "rtl_enable",
+          "label": "Right to left?",
+          "info": "Note: the HTML tag or the parent of the slider must have the attribute \"dir\" set to \"rtl\".",
+          "default": false
+        },       
+		{
+          "type": "checkbox",
+          "id": "variable_width_enable",
+          "label": "Variable width?",
+          "info": "Variable width slides",
+          "default": true
+        },
+		{
+          "type": "range",
+          "id": "margin_top_slidershow",
+          "label": "Margin top of this section",
+          "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 0
+        },
+        {
+          "type": "range",
+          "id": "margin_bottom_slidershow",
+          "label": "Margin bottom of this section",
+		  "min": 0,
+          "max": 50,
+          "step": 1,
+          "default": 0
+        }
+	],
+	"blocks": [
+      {
+        "type": "img",
+        "name": "Image slide (Parent)",
+        "settings": [		
+          {
+            "type": "image_picker",
+            "id": "image_sl",
+            "label": "Image",			
+			"info": "1170 x 473px .jpg recommended"
+          },		 	  
+          {
+            "type": "url",
+            "id": "link_img",
+            "label": "Link image",
+            "info": "The image becomes clickable."
+          },
+          {
+            "type": "select",
+            "id": "open_link",
+            "options": [
+              {
+                "value": "_self",
+                "label": "Current window (_self)"
+              },
+             {
+                "value": "_blank",
+                "label": "New window (_blank)"
+              }
+            ],
+            "label": "Open link in",
+            "default": "_blank"
+          },
+          {
+             "type": "header",
+             "content": "== Caption settings"
+           },
+          {
+            "type": "select",
+            "id": "caption_w",
+            "default": "2",
+            "options": [
+             {
+                "value": "1",
+                "label": "Container"
+             },
+             {
+                "value": "2",
+                "label": "Full Width"
+              }
+            ],
+            "label": "Caption Width"
+          },
+          {
+             "type": "range",
+             "id": "cap_v_pos",
+             "label": "Caption vertical position",
+             "default": 50,
+             "min": 0,
+             "max": 100,
+             "step": 1,
+             "unit": "%"
+          },
+          {
+             "type": "range",
+             "id": "cap_h_pos",
+             "label": "Caption horizontal position",
+             "default": 0,
+             "min": 0,
+             "max": 100,
+             "step": 1,
+             "unit": "%"
+          },
+          {
+            "type": "select",
+            "id": "txt_align",
+            "label": "Text alignment",
+            "default": "left",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ]
+          },          
+          {
+            "type": "header",
+            "content": "== Color"
+          },
+          {
+            "type": "color",
+            "id": "cl_overlay",
+            "label": "Overlay",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "id": "cl_opacity",
+            "label": "Overlay opacity",
+            "default": 100,
+            "min": 0,
+            "max": 100,
+            "step": 10,
+            "unit": "%"
+          },
+          {
+            "type": "header",
+            "content": "== Animation"
+          },
+          {
+            "type": "select",
+            "id": "ani_img",
+            "label": "Image",
+            "default": "none",
+            "options": [
+              {
+                "value": "none",
+                "label": "None"
+              },
+              {
+                "value": "bounce",
+                "label": "Bounce"
+              },
+              {
+                "value": "swing",
+                "label": "Swing"
+              }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "ani_txt",
+            "label": "Text",
+            "default": "none",
+            "options": [
+              {
+                "value": "none",
+                "label": "None"
+              },
+              {
+                "value": "bottom_top",
+                "label": "Bottom to top"
+              },
+              {
+                "value": "top_bottom",
+                "label": "Top to bottom"
+              },
+              {
+                "value": "left_right",
+                "label": "Left to right"
+              },
+              {
+                "value": "right_left",
+                "label": "Right to left"
+              }
+            ]
+          }
+        ]
+      },
+      {
+      "type": "hd",
+      "name": "Heading",
+      "settings": [
+          {
+            "type": "textarea",
+            "id": "title",
+            "label": "Heading",
+            "default": "Sale & service of laptop"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Color Text",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "fw_text",
+            "min": 400,
+            "max": 800,
+            "step": 100,
+            "label": "Font weight",
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "fs_text",
+            "min": 20,
+            "max": 70,
+            "step": 0.5,
+            "label": "Font size",
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "lh_text",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "label": "Line Height",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "fs_mb_text",
+            "min": 10,
+            "max": 50,
+            "step": 0.5,
+            "label": "Font size (mobile)",
+            "unit": "px",
+            "default": 15
+          }
+          
+        ]
+      },
+      {
+        "type": "subhd",
+        "name": "Sub Heading",
+        "settings": [
+            {
+              "type": "select",
+              "id": "font",
+              "default": "f__libre",
+              "options": [
+               {
+                  "value": "f_body",
+                  "label": "Body font"
+               },
+               {
+                  "value": "f_heading",
+                  "label": "Heading font"
+               },
+               {
+                  "value": "f__libre",
+                  "label": "Sub title font"
+                }
+              ],
+              "label": "Sub Heading use font:"
+            },
+            {
+              "type": "textarea",
+              "id": "title",
+              "label": "Heading",
+              "default": "Up to 50% off"
+            },
+            {
+              "type": "color",
+              "id": "color",
+              "label": "Color Text",
+              "default": "#fff"
+            },
+            {
+              "type": "range",
+              "id": "fw_text",
+              "min": 400,
+              "max": 800,
+              "step": 100,
+              "label": "Font weight",
+              "default": 400
+            },
+            {
+              "type": "range",
+              "id": "fs_text",
+              "min": 10,
+              "max": 50,
+              "step": 0.5,
+              "label": "Font size",
+              "unit": "px",
+              "default": 14
+            },
+            {
+              "type": "range",
+              "id": "lh_text",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "label": "Line Height",
+              "info": "set is '0' use to default",
+              "unit": "px",
+              "default": 0
+            },
+            {
+              "type": "range",
+              "id": "ls_text",
+              "min": 0,
+              "max": 10,
+              "step": 0.1,
+              "label": "Letter spacing",
+              "info": "set is '0' use to default",
+              "unit": "px",
+              "default": 0
+            },            
+            {
+              "type": "checkbox",
+              "id": "hide",
+              "label": "Hidden on mobile?",
+              "default": false
+            }
+          ]
+      },
+      {
+        "type": "txt",
+        "name": "Content",
+        "settings": [
+            {
+              "type": "textarea",
+              "id": "title",
+              "label": "Content",
+              "default": "Only: $268.00"
+            },
+            {
+              "type": "color",
+              "id": "color",
+              "label": "Color Text",
+              "default": "#fff"
+            },
+            {
+              "type": "range",
+              "id": "fw_text",
+              "min": 400,
+              "max": 800,
+              "step": 100,
+              "label": "Font weight",
+              "default": 400
+            },
+            {
+              "type": "range",
+              "id": "fs_text",
+              "min": 10,
+              "max": 50,
+              "step": 0.5,
+              "label": "Font size",
+              "unit": "px",
+              "default": 14
+            },
+            {
+              "type": "range",
+              "id": "lh_text",
+              "min": 0,
+              "max": 100,
+              "step": 1,
+              "label": "Line Height",
+              "info": "set is '0' use to default",
+              "unit": "px",
+              "default": 0
+            },
+            {
+              "type": "range",
+              "id": "ls_text",
+              "min": 0,
+              "max": 10,
+              "step": 0.1,
+              "label": "Letter spacing",
+              "info": "set is '0' use to default",
+              "unit": "px",
+              "default": 0
+            },            
+            {
+              "type": "checkbox",
+              "id": "hide",
+              "label": "Hidden on mobile?",
+              "default": false
+            }
+          ]
+      },
+      {
+        "type": "btn",
+        "name": "Button",
+        "settings": [
+            {
+              "type": "text",
+              "id": "title",
+              "label": "Button label",
+              "default": "Shop Now"
+            },
+            {
+              "type": "url",
+              "id": "btn_link",
+              "label": "Button link",
+			  "info": "Note: if you want to display this button then you need to fill button link"
+            },
+            {
+              "type": "text",
+              "id": "title2",
+              "label": "Button label 2",
+              "default": "Shop Now"
+            },
+            {
+              "type": "url",
+              "id": "btn_link2",
+              "label": "Button link 2",
+			  "info": "Note: if you want to display this button then you need to fill button link"
+            },
+            {
+              "type": "checkbox",
+              "id": "btn_round",
+              "label": "Button round?",
+              "default": false
+            },            
+            {
+              "type": "color",
+              "id": "cl_txt",
+              "label": "Text color",
+              "default": "#fff"
+            },
+            {
+              "type": "color",
+              "id": "cl_bg",
+              "label": "Background color",
+              "default": "#222"
+            },
+            {
+              "type": "color",
+              "id": "cl_bd",
+              "label": "Border color",
+              "default": "#222"
+            },
+            {
+              "type": "range",
+              "id": "fs_text",
+              "min": 10,
+              "max": 40,
+              "step": 0.5,
+              "label": "Font size",
+              "unit": "px",
+              "default": 14
+            },
+            {
+              "type": "range",
+              "id": "fw_text",
+              "min": 400,
+              "max": 600,
+              "step": 100,
+              "label": "Font weight",
+              "default": 600
+            },
+            {
+              "type": "text",
+              "id": "mg",
+              "label": "Margin",
+              "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+              "default": "0px 0px 0px 0px",
+              "placeholder": "50px 50px,"
+            },
+            {
+              "type": "text",
+              "id": "pd",
+              "label": "Padding",
+              "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+			  "default": "5px 10px",
+              "placeholder": "50px 50px,"
+            },
+            {
+              "type": "range",
+              "id": "ls_text",
+              "min": 0,
+              "max": 10,
+              "step": 0.1,
+              "label": "Letter spacing",
+              "info": "set is '0' use to default",
+              "unit": "px",
+              "default": 0
+            }           
+          ]
+      },
+      {
+        "type": "html",
+        "name": "HTML",
+        "settings": [
+            {
+              "type": "html",
+              "id": "html",
+              "label": "Custom HTMl",
+              "default": "<h3>Best shopify theme 2020<\/h3>"
+            }
+          ]
+      },
+      {
+        "type": "space",
+        "name": "Space between",
+        "settings": [
+            {
+              "type": "range",
+              "id": "sp",
+              "min": 0,
+              "max": 105,
+              "step": 5,
+              "label": "Space",
+              "unit": "px",
+              "default": 10
+            }
+            
+          ]
+      }
+	],
+    "presets": [{
+      "name": "1. Slideshow",
+      "category": "Images",
+      "settings": {
+			
+      },
+	  "blocks": [
+		  { "type": "img" },
+          { "type": "img" },
+          { "type": "img" }
+	  ]
+    }]
+  }
+{% endschema %}
+

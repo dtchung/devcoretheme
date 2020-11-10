@@ -1,0 +1,53 @@
+  {% include 'oldIE-js' %}
+
+<!-- Fixed -->
+  {{'jquery-2.2.0.min.js' | asset_url | script_tag }}  
+  <script src="{{ 'lazysizes.js' | asset_url }}" defer="defer"></script>  
+  {{"jquery.cookie.js" | asset_url | script_tag }}
+  {{'jquery.storageapi.min.js' | asset_url | script_tag }}
+
+<!-- End fixed -->
+
+  {{ 'bootstrap.min.js' | asset_url | script_tag }} 
+  {{ 'slick.min.js' | asset_url | script_tag}}
+  {{ 'magnific-popup.min.js' | asset_url | script_tag }}
+  {{ 'jquery.plugin-countdown.min.js' | asset_url | script_tag }}
+  {{ 'jquery-countdown.min.js' | asset_url | script_tag }}
+  {{ 'jquery-ui.min.js' | asset_url | script_tag }}
+  {{ 'jquery.scrollbar.min.js' | asset_url | script_tag }}
+  {{ 'chosen.min.js' | asset_url | script_tag }}
+  {{ 'frontend.js' | asset_url | script_tag }}
+  {{ 'filter.js' | asset_url | script_tag }} 
+  {{ 'script.js' | asset_url | script_tag }} 
+  {{ 'sweetalert.min.js' | asset_url | script_tag }}  
+  {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {{ 'plugin.tippy.all.min.js' | asset_url | script_tag }}
+  {{ 'plugin.fotorama.min.js' | asset_url | script_tag }}
+  {{ 'jquery.ez-plus.js' | asset_url | script_tag }}
+  {{ 'md.tooltip.js' | asset_url | script_tag }}  
+  {{'jquery.pjax.js' | asset_url | script_tag }}
+  {{'shopify.js' | asset_url | script_tag }}
+  {{'interact-function.js' | asset_url | script_tag }}
+  {{'packery.pkgd.js' | asset_url | script_tag }}
+  {{'isotope.pkgd.js' | asset_url | script_tag }}
+  
+  {% if  template contains "compare" %}
+  {{'jquery.storageapi.min.js' | asset_url | script_tag }}
+  {% endif %}
+  {% include 'google-fonts' %}
+ 
+  {% if template contains 'customers' %}
+  {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+  <script>
+    {% if customer %} 
+        var is_customers = true;
+    {% else %}
+        var is_customers = false ;
+    {% endif %}
+    var compare_list = [];
+    var viewmode;
+    var $slider_filter
+  </script>
+
+ 

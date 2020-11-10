@@ -1,0 +1,29 @@
+<div class="products-arrivals">
+  <div class="section-head box-has-content">
+    <h4 class="section-title">{{settings.title_related_products}}</h4>
+  </div>
+  <div class="section-content grid-style">
+    <div class="js-related-product">
+          {% assign handle_current = product.handle %}
+          {% assign handle = product.collections[0].handle %}
+          {% if handle =='' or handle == blank %}
+          		{% assign handle = 'frontpage' %}
+          {% endif %}		
+          {% for product in collections[handle].products%}              
+          	{% if handle_current != product.handle %}
+              {% assign on_sale = false %}
+              {% assign sale_text = 'products.product.on_sale' | t %}
+              {% if product.compare_at_price > product.price %}
+              	{% assign on_sale = true %}
+              {% endif %}
+              {% assign sold_out = true %}
+              {% assign sold_out_text = 'products.product.sold_out' | t %}
+              {% if product.available %}
+             	 {% assign sold_out = false %}
+              {% endif %}              
+              {% include 'product_style_1'%}  
+          	{% endif %}
+          {% endfor %}          
+    </div>
+  </div>
+</div>

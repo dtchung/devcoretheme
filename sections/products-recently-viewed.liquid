@@ -1,0 +1,200 @@
+{%- for i in (1..1) %}{% unless section.settings.show %}{% break %}{% endunless -%}
+   
+   {%- assign limit = section.settings.limit -%}   
+
+   {%- if search.performed and search.results_count > 0 -%}
+      {%- paginate search.results by limit -%}
+        {%- assign sortby = section.settings.sortby | plus:0 -%}
+        {%- case sortby -%}
+            {%- when 5 or 6 -%}
+               {%- assign results = search.results | sort: 'price' -%}
+            {%- when 7 or 8 -%}
+               {%- assign results = search.results | sort: 'published_at' -%}
+            {%- else -%}
+               {%- assign results = search.results -%}
+        {%- endcase -%}
+        {%- assign modu = sortby | modulo:2 -%}
+        
+      <div class="products-arrivals">
+        <div class="section-head box-has-content">
+            <h4 class="section-title">{{section.settings.title}}</h4>
+        </div>           
+        <div class="section-content grid-style">
+    		<div class="js-recently-viewed-slider recently-viewed-slider" >              
+                {%- if sortby == 1 -%}
+                    {%- assign array = search.terms | remove: 'id:' | split:' OR ' -%}              
+                    {%- for i in array -%}
+                        {%- assign j = i | plus:0 -%}
+                        {%- assign item = results | where: "id", j -%}
+                        {%- if item == blank %}{% continue %}{% endif -%}
+              			{% assign on_sale = false %}
+                        {% assign sale_text = 'products.product.on_sale' | t %}
+                        {% if item[0].compare_at_price > product.price %}
+                        	{% assign on_sale = true %}
+                        {% endif %}
+                        {% assign sold_out = true %}
+                        {% assign sold_out_text = 'products.product.sold_out' | t %}
+                        {% if item[0].available %}
+                        	{% assign sold_out = false %}
+                        {% endif %} 
+                        {%- render 'product_style_1',product:item[0],on_sale:on_sale,sold_out:sold_out  -%}
+                    {%- endfor -%}  
+                {%- elsif sortby == 2 -%}
+                  {%- assign array = search.terms | remove: 'id:' | split:' OR ' -%}              
+                    {%- for i in array reversed -%}
+                        {%- assign j = i | plus:0 -%}
+                        {%- assign item = results | where: "id", j -%}
+                        {%- if item == blank %}{% continue %}{% endif -%}
+              		    {% assign on_sale = false %}
+                        {% assign sale_text = 'products.product.on_sale' | t %}
+                        {% if item[0].compare_at_price > product.price %}
+                        	{% assign on_sale = true %}
+                        {% endif %}
+                        {% assign sold_out = true %}
+                        {% assign sold_out_text = 'products.product.sold_out' | t %}
+                        {% if item[0].available %}
+                        	{% assign sold_out = false %}
+                        {% endif %} 
+                        {%- render 'product_style_1',product:item[0],on_sale:on_sale,sold_out:sold_out-%}
+                    {%- endfor -%}
+                {%- else -%}
+                  {%- if modu == 0 -%}                
+                      {%- for product_r in results -%}
+              			{% assign on_sale = false %}
+                        {% assign sale_text = 'products.product.on_sale' | t %}
+                        {% if product_r.compare_at_price > product.price %}
+                        	{% assign on_sale = true %}
+                        {% endif %}
+                        {% assign sold_out = true %}
+                        {% assign sold_out_text = 'products.product.sold_out' | t %}
+                        {% if product_r.available %}
+                        	{% assign sold_out = false %}
+                        {% endif %}              
+                        {%- render 'product_style_1',product:product_r,on_sale:on_sale,sold_out:sold_out -%}
+                      {%- endfor -%}                
+
+                  {%- else -%}                
+                      {%- for product_r in results reversed -%}
+              			{% assign on_sale = false %}
+                        {% assign sale_text = 'products.product.on_sale' | t %}
+                        {% if product_r.compare_at_price > product.price %}
+                        	{% assign on_sale = true %}
+                        {% endif %}
+                        {% assign sold_out = true %}
+                        {% assign sold_out_text = 'products.product.sold_out' | t %}
+                        {% if product_r.available %}
+                        	{% assign sold_out = false %}
+                        {% endif %} 
+                        {%- render 'product_style_1',product:product_r, on_sale:on_sale,sold_out:sold_out-%}
+                      {%- endfor -%} 
+                  {%- endif -%}             
+                {%- endif -%}
+           </div>
+        </div>
+	</div>
+        {%- endpaginate -%}
+   {%- else -%}
+    <div class="recently-product" id="js_recently_wrapper" data-section-type="product-recently" data-get='{{ routes.search_url }}' data-unpr='{{section.settings.unavailable_prs}}' data-id="id:{{product.id|default:19041994}}" data-limit="{{limit}}" data-expands="-1">
+      <div class="loading_bg"></div>
+    </div>
+   {%- endif -%}
+
+{%- endfor -%}
+{%- schema -%}
+{
+  "name": "Products recently viewed",
+  "class": "product_recently_viewed",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show",
+      "label": "Show product recently viewed?",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "unavailable_prs",
+      "options": [
+        {
+          "value": "hide",
+          "label": "Hide"
+        },
+        {
+          "value": "show",
+          "label": "Show"
+        }
+      ],
+      "label": "Unavailable products",
+      "default": "show"
+    },
+    {
+      "type": "paragraph",
+      "content": "Specifies whether to display results for unavailable products. The three possible options are show, hide. Set to hide to exclude unavailable products from the search results."
+    },
+    {
+      "type": "header",
+      "content": "== Title Settings"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading",
+      "default": "Recently viewed products"
+    },    
+   {
+     "type": "header",
+     "content": "== General Configuration"
+   },
+      {
+        "type": "range",
+        "id": "limit",
+        "label": "Number of Products to display",
+        "min": 1,
+        "max": 20,
+        "step": 1,
+        "default": 5
+      },
+      {
+        "type": "select",
+        "id": "sortby",
+        "options": [
+          {
+            "value": "1",
+            "label": "Time Added, New To Old"
+          },
+          {
+            "value": "2",
+            "label": "Time Added, Old To New"
+          },
+          {
+            "value": "3",
+            "label": "Alphabetically, Z-A"
+          },
+          {
+            "value": "4",
+            "label": "Alphabetically, A-Z"
+          },
+          {
+            "value": "5",
+            "label": "Price, High To Low"
+          },
+          {
+            "value": "6",
+            "label": "Price, Low To High"
+          },
+          {
+            "value": "7",
+            "label": "Date published, New To Old"
+          },
+          {
+            "value": "8",
+            "label": "Date published, Old To New"
+          }
+        ],
+        "label": "Sort By",
+        "default": "3"
+      }
+      
+  ]
+}
+{% endschema %}

@@ -1,0 +1,87 @@
+<div class="vertical-wapper parent-content">
+  <div class="block-title show-content">
+    <span class="icon-bar">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    <span class="text">{{section.settings.header_category_menu_txt}}</span>
+  </div>
+  <div class="vertical-content hidden-content">
+    <ul class="vertical-menu lazyload" data-include="{{routes.search_url}}?view=hcat-nav">
+      <li class="loading_bg pr"></li>
+    </ul>
+  </div>
+</div>
+
+
+<!--<div class="vertical-wapper parent-content">
+  <div class="block-title show-content">
+    <span class="icon-bar">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    <span class="text">{{section.settings.header_category_menu_txt}}</span>
+  </div>
+  <div class="vertical-content hidden-content">
+    {%- if linklists[section.settings.category_menu].links.size > 0 %}
+            <ul class="vertical-menu">
+              {% for link in linklists[section.settings.category_menu].links %}
+              		{% assign param  = link.title |  split: '[' | last  | split: ']' | first | remove:" "|  strip_html %}
+              	    {% assign child_list_handle = link.handle | remove:" "|  strip_html%}
+              		{% assign element1  = param | split:'/' | first %}
+              		{% assign element2  = param | split:'/' | last %}
+              
+              		{% if linklists[child_list_handle].links.size > 0%}
+              			
+                        <li class="menu-item-has-children has-megamenu">
+                          <a href="{{ link.url }}"><span class="icon"><img src="{{element1 | asset_url}}" alt=""></span>
+                            {% if link.title contains '['%}                  	
+                                {{ link.title |  split: '[' | first | truncate:24}}
+                            {%else %}
+                                {{ link.title | truncate:24 }}
+                            {% endif %}
+                          </a>
+                          <a href="{{ link.url }}" class="toggle-submenu"></a>
+                          <div class="submenu submenu2 mega-menu" style="background-image:url({{element2 | asset_url}})">
+                            <div class="row">
+                              {% for child_link in linklists[child_list_handle].links %}
+                              	  {% assign grand_child_list_handle = child_link.handle | remove:" "|  strip_html %}
+                                  <div class="widget-custom-menu col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <h5 class="title widgettitle">{{child_link.title}}</h5>
+                                    {% if linklists[grand_child_list_handle].links.size > 0 %}
+                                        <ul>
+                                           {% for child_third_link in linklists[grand_child_list_handle].links %}
+                                              {% assign final_child_list_handle = child_third_link.handle | remove:" "|  strip_html %}                            
+                                              <li><a href="{{child_third_link.url}}">{{child_third_link.title}}</a></li>                                          
+                                           {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                  </div>
+                              {% endfor %}   
+                            </div>                            
+                          </div>
+                        </li>
+              		{% else %}
+              		    <li>
+                          <a href="{{ link.url }}">
+                            <span class="icon">
+                            	<img src="{{element1 | asset_url}}" alt="">
+                            </span> 
+                            {% if link.title contains '['%}                  	
+                                {{ link.title |  split: '[' | first | truncate:24}}
+                            {%else %}
+                                {{ link.title | truncate:24}}
+                            {% endif %}
+                          </a>
+              			</li>
+              		{% endif %}
+                  
+              {% endfor %}
+            </ul> 
+    {% else %}
+    	
+    {% endif %} 
+  </div>
+</div>-->

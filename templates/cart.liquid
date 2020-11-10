@@ -1,0 +1,94 @@
+{% comment %}
+  The contents of the cart.liquid template can be found in /sections/cart-template.liquid
+{% section 'cart-template' %}
+{% endcomment %}
+
+<div class="main-content shop-page shoppingcart-content">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="#">Home</a> \ {{template | link_to:'/cart'}}
+    </div>
+    {% if cart.item_count > 0 %} 
+        <div class="row content-form">
+          <div class="col-xs-12 col-sm-12 col-md-8 col-lg-9 content-offset">
+            <div class="cart-content">
+              <form action="/cart" method="post" novalidate class="cart">
+              <table class="shopping-cart-content">
+                <tr class="title">
+                  <td class="product-thumb"></td>
+                  <td class="product-name">{{'cart.label.product'|t}}</td>
+                  <td class="price">{{'cart.label.price'|t}}</td>
+                  <td class="quantity-item">{{'cart.label.quantity'|t}}</td>	
+                  <td class="total">{{'cart.label.total'|t}}</td>
+                  <td class="delete-item"></td>
+                </tr>
+                {% for item in cart.items %}
+                <tr class="each-item">
+                  <td class="product-thumb"><a href="{{ item.url }}"><img src="{{ item | img_url: 'small' }}" alt=""></a></td>
+                  <td class="product-name" data-title="Product Name"><a href="{{ item.url }}" class="product-name">{{ item.product.title }}</a></td>
+                  <td class="price" data-title="Unit Price">{{ item.price | money }}</td>
+                  <td class="quantity-item" data-title="Qty">
+                    <div class="quantity">
+                      <div class="group-quantity-button">
+                        <a class="minus" href="#"><i class="fa fa-minus" aria-hidden="true"></i></a>
+                        <input id="updates_{{ item.id }}" class="input-text qty text" type="text" size="4" title="Qty" name="updates[]" value="{{ item.quantity }}">
+                        <a class="plus" href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="total" data-title="{{'cart.label.total'|t}}">{{ item.line_price | money }}</td>
+                  <td class="delete-item" data-title="Remove"><a href="/cart/change?line={{ forloop.index }}&amp;quantity=0"><i class="fa fa-times" aria-hidden="true"></i></a></td>
+                </tr>
+                {% endfor %}
+                <tr class="checkout-cart group-button">
+                  <td colspan="6" class="left">
+                    <div class="left">
+                      <a href="/" class="continue-shopping submit">{{'cart.general.continue_shopping' | t }}</a>
+                    </div>
+                    <div class="right">
+                      <a href="javascript:void(0);" class="submit update clear-cart">{{ 'cart.general.cancel' |t}}</a>
+                      <button type="submit" class="submit update">{{ 'cart.general.update' | t }}</button>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              </form>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-4 col-lg-3 ">
+            <div class="proceed-checkout">
+              <h4  class="title-shopping-cart main-title" style="margin-top:0px;">{{ settings.shipping_calculator_heading | default: 'CALCULATED SHIPPING' }}</h4>  
+              <div class="content" style="margin-bottom: 20px;">
+              	{% include 'shipping-calculator' %}
+              </div>
+              <h4 class="main-title">{{settings.shipping_process_checkout_heading}}</h4>
+              <div class="content">
+                <h5 class="title">{{ 'cart.general.subtotal' | t }}</h5>
+                <div class="info-checkout">
+                  <span class="text">{{'cart.label.total' | t}}: </span><span class="item">{{ cart.total_price | money }}</span>
+                </div>
+                <div class="info-checkout shipping">
+                  <span class="text">{{'cart.general.shipping_at_checkout'|t}}:</span><span class="item" id="wrapper-response"></span>
+                </div>
+                <div class="total-checkout">
+                  <span class="text">{{settings.shipping_grand_total_title}} </span><span class="price"> </span>
+                </div>
+                <div class="group-button">
+                  <a href="/checkout" class="button submit">{{ 'cart.general.checkout' | t }}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% else %}	
+    <div class="row content-form">
+      <div class="container proceed-checkout">
+        <p class="main-title">{{ 'cart.general.empty' | t }}</p>
+        <div class="group-button">
+        	<a href="/" class="button submit">{{ 'cart.general.continue_shopping' | t }}</a>   
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>

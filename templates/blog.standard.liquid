@@ -1,0 +1,78 @@
+{% comment %}
+  The contents of the blog.liquid template can be found in /sections/blog-template.liquid
+{% section 'blog-template' %}
+{% endcomment %}
+
+
+{% paginate blog.articles by settings.pagination_limit_blog %}
+    <div class="main-content shop-page main-content-blog">
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="/">Home</a> / <span class="current">{{ 'Blog'| link_to: blog.url}}</span>
+        </div>
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+            <div class="row auto-clear blog-grid">
+              {% for article in blog.articles %}
+                  {% case article.template_suffix %}
+                      {% when 'video'%}
+                      	{% include 'blog-video' %}
+                      {% when 'gallery' %}
+                      	{% include 'blog-gallery' %}
+                      {% when 'audio' %}
+                      	{% include 'blog-audio' %}
+                      {% when 'image' %}
+                      	{% include 'blog-image' %}
+                      {% else %}
+                      	{% include 'blog-standard' %}
+                  {% endcase %}      
+              {% endfor %}                
+            </div>
+            
+            {% if paginate.pages > 1 %}
+            <div class="row">     
+              {%comment%}{{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}{%endcomment%}
+              <div class="pagination">
+				<ul class="list-page">
+                    {% if paginate.previous.is_link %}
+                  		<li><a href="{{ paginate.previous.url }}#primary" class="nav-button page-numbers"> {{ paginate.previous.title }}</a></li>
+                    {% endif %}
+
+                    {% assign i=1 %}
+                    {% for i in (1..paginate.pages) %}
+                        {% if paginate.current_page == i %}                        
+                            <li><a href="#" class="page-number current">{{i}}</a></li>
+                        {% else %}
+                        <li><a href="/blogs/{{blog.handle}}?page={{i}}#primary" class="page-number">{{i}}</a></li>
+                        {%endif%}
+                    {% endfor %}
+
+                    {% if paginate.next.is_link %}
+                  		<li><a href="{{ paginate.next.url }}#primary" class="nav-button page-numbers">{{ paginate.next.title }}</a></li>
+                    {% endif %}
+                </ul>
+              </div>
+            </div>
+            {% endif %}            
+          </div>          
+          
+        </div>
+      </div>
+      
+</div>
+{% endpaginate %}  
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "mainEntityOfPage": {"@type": "WebPage","@id": "{{ shop.secure_url }}{{ blog.url }}"},
+    "publisher": {
+      "@type": "Organization",
+      "name": "{{ shop.name }}",
+      "description": {{ shop.description | json }}
+    },
+    "url": "{{ shop.secure_url }}{{ blog.url }}",
+    "name": "{{ blog.title }}"
+  }
+</script>
+  

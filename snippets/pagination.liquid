@@ -1,0 +1,16 @@
+
+<nav class="navigation pagination" role="navigation">      
+  {%comment%}{{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}{%endcomment%}
+  <div class="nav-links">
+
+    {% if paginate.previous.is_link %}
+    	<a href="{{ paginate.previous.url }}#primary" class="prev page-numbers"> {{ paginate.previous.title }}</a>
+    {% endif %}
+            
+    <span class="page-numbers current">{{ 'general.pagination.current_page' | t: current: paginate.current_page, total: paginate.pages }}</span>
+     
+    {% if paginate.next.is_link %}
+    	<a href="{{ paginate.next.url }}#primary" class="next page-numbers">{{ paginate.next.title }}</a>
+    {% endif %}
+  </div>
+</nav>

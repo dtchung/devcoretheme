@@ -1,0 +1,869 @@
+{% liquid
+  assign sid = section.id
+  assign se_blocks = section.blocks
+  assign arr_blocks_img = se_blocks | where: "type", 'img'
+  assign limit = section.settings.limit
+  assign collection = collections[section.settings.collection]
+  assign sett_equal = section.settings.use_eq_height
+  assign layout_des = section.settings.layout_des
+  assign collection = section.settings.collection 
+  assign limit = section.settings.limit
+%}
+   
+{%- for i in (1..1) -%}
+     
+  <div class="nt_se_{{sid}} {{section.settings.layout}}">
+    <div class="wrap_title">
+      <h3 class="section-title"><span > {{section.settings.title}}</span></h3>        
+      <span class="section-subtitle">{{section.settings.sub_title}}</span>
+    </div> 
+    <div class="row banner_collection_wrap {{section.settings.image_ratio}} {% if sett_equal %} equal_nt{% endif %}">
+      
+      <div class="col-12 col-lg-6 cat_banner_img">   
+          {%- for block in arr_blocks_img %}
+              {% assign image = block.settings.image %}
+              {% assign url = block.settings.link_img1 %}
+              {% assign open_link = block.settings.open_link -%}
+              <div id="nt_{{block.id}}" class="slideshow__slide" {{ block.shopify_attributes }}> 
+                <div class="nt_img_txt">
+
+                  {%- if image != blank -%}
+                  	{%- assign ratio = image.aspect_ratio -%}
+                    <div class=" img_slider_block dek_img_slide">
+                      <div class="nt_bg_lz lazyload pr_lazy_img " data-bgset="{{ image | img_url: '1x1' }}" data-ratio="{{ratio}}" data-sizes="auto" style="padding-top:128%;"></div>
+                    </div>                    
+                  {%- else -%}
+                    <div class="img_slider_block">
+                      <div class="nt_bg_lz lazyload pr_lazy_img " data-bg="https://placehold.it/742.png/f5f5f5/999?text=570 x 730" style="padding-top:128%;"></div>
+                    </div>
+                  {%- endif -%}
+
+                  <div class="caption-wrap {{block.settings.txt_align}}">
+                    <div class="caption pa_txts ">   
+                        {%- for bl in se_blocks -%}                           
+                            {%- case bl.type -%}
+                              {%- when 'hd' -%}
+                                <h3 id="b_{{bl.id}}" class="slt4_h3 " {{ bl.shopify_attributes }}>{{bl.settings.title}}</h3>
+                              {%- when 'subhd' -%}
+                                <h4 id="b_{{bl.id}}" class="slt4_h4 {{bl.settings.font}}" {{ bl.shopify_attributes }}>{{bl.settings.title}}</h4>
+                              {%- when 'txt' -%}
+                                <p id="b_{{bl.id}}" class="slt4_p" {{ bl.shopify_attributes }}>{{bl.settings.title}}</p> 
+                              {%- when 'btn' -%}
+                                {%- if bl.settings.btn_link != blank and bl.settings.title != blank -%}<a id="b_{{bl.id}}" class="slt4_btn button " href="{{bl.settings.btn_link}}" target="{{open_link}}" {{ bl.shopify_attributes }}>{{bl.settings.title}}</a>{%- endif -%}                                
+                              {%- when 'html' -%}
+                                <div id="b_{{bl.id}}" class="slt4_html" {{ bl.shopify_attributes }}>{{bl.settings.html}}</div>
+                              {%- when 'space' -%}
+                                <div id="b_{{bl.id}}" class="slt4_space" {{ bl.shopify_attributes }}></div>
+                              
+                            {%- endcase -%}
+                        {%- endfor -%}                     
+                    </div> 
+                  </div>
+                  <a href="{{url}}" target="{{open_link}}" class="{% if url == blank %} display_none{% endif %}"></a>
+                </div>
+              </div>
+          {%- endfor -%}      
+      </div>
+
+      <div class="col-12 col-lg-6 cat_banner_prs ">
+        <div class="products nt_products_holder row {{section.settings.image_ratio}} {%- if sett_equal %} equal_nt{%- endif -%}">
+          	
+            {%- if collection != blank -%}  
+              	{%- for product in collections[collection].products limit:limit -%}
+                     <div class="pr_grid_item col-6 col-lg-6 col-md-6">
+                     	{% include 'product-collection' with product: product %}
+                     </div>
+                   {%- endfor -%}    
+            {%- else -%}
+               {%- for i in (1..4) -%}
+                  <div class="pr_grid_item col-6 col-lg-6 col-md-6 ">
+                    <div class="product-inner"><div class="product-image"><a class="db" href="/admin/products">{%- capture current -%}{%- cycle 1, 2, 3, 4, 5, 6,7,8 -%}{%- endcapture -%}<div class="pr_lazy_img nt_bg_lz lazyload" style="padding-top:100%" data-bg="https://placehold.it/570x570.png/{% cycle 'a8dacc', '56cfe1', 'f99077','c8b09b','efe1ba','a5d0d9','a1a19f' %}/fff?text=Product+{{current}}"></div></a></div></div>
+                    <div class="product-info "><h3 class="product-title"><a class="cd" href="/admin/products">{{ 'homepage.onboarding.product_title' | t }}</a></h3><span class="price"><del>$59.00</del><ins>$39.00</ins></span></div>
+                  </div>
+               {%- endfor -%}
+            {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+
+{%- endfor -%}
+
+{%- liquid
+    assign mg = section.settings.mg
+    assign pd = section.settings.pd
+    assign mg_mb = section.settings.mg_mb
+    assign pd_mb = section.settings.pd_mb
+    assign sid = section.id -%}
+
+    {%- capture style -%}
+    {%- if section.settings.cl_bg != blank -%}#shopify-section-{{sid}} {background-color: {{section.settings.cl_bg}} !important;}{%- endif -%}
+    {%- if mg != blank or pd != blank -%} 
+    .nt_se_{{sid}} {
+    max-width:100%;
+    {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+    margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+    {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+    {%- endif -%}
+    {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+    padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+    {%- endif -%}
+    }
+    {%- endif -%}
+    {%- if mg_mb != blank or pd_mb != blank -%} 
+    @media only screen and (max-width: 767px) {
+    .nt_se_{{sid}} {
+    {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+    margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+    {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+    {%- endif -%}
+    {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+    padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+    {%- endif -%}
+    }
+    }
+    {%- endif -%}
+    {%- endcapture -%}
+
+    {%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+{%- unless sett_equal %}{% style -%}
+  {%- for bl in arr_img -%}{% assign image = bl.settings.image %}{% assign ratio = image.aspect_ratio |default:1.0 -%}
+       #pin_{{bl.id}} .pr_lazy_img{padding-top:{{ 1 | divided_by: ratio | times: 100}}%;}
+  {%- endfor -%}
+{%- endstyle %}{% endunless -%}
+
+
+
+{%- schema -%}
+  {
+    "name": "Collection banner",
+    "class": "cms_section type_banner_collection",
+	"max_blocks": 100,
+    "settings": [
+      {
+        "type": "header",
+        "content": "== Title Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Collection banner"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text"
+      },  
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },  
+      {
+        "type": "collection",
+        "id": "collection",
+        "label": "Collection"
+      }, 
+	  {
+        "type": "range",
+        "id": "limit",
+        "min": 1,
+        "max": 8,
+        "step": 1,
+        "label": "Products per page",
+        "info": "Number of products per page",
+        "default": 4
+      },          
+	  {
+        "type": "select",
+        "id": "col_pr",
+        "label": "Product per row",
+        "info": "How many product you want to show per row (Layout design is grid)",
+        "default": "4",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          }
+        ]
+      },   
+      {
+        "type": "select",
+        "id": "col_pr_tb",
+        "label": "Products per row (tablet)",
+        "default": "3",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr_mb",
+        "label": "Products per row (mobile)",
+        "default": "2",
+        "options": [
+          {
+            "value": "1",
+            "label": "1"
+          },
+          {
+            "value": "2",
+            "label": "2"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio1_1",
+        "info": "Aspect Ratio Custom will settings in General panel.",
+        "options": [
+          {
+            "group": "Landscape",
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio4_3",
+            "label": "4:3"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio_nt",
+            "label": "Ratio ASOS"
+          },
+          {
+            "group": "Squared",
+            "value": "ratio1_1",
+            "label": "1:1"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio2_3",
+            "label": "2:3"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio1_2",
+            "label": "1:2"
+          },
+		   {
+            "group": "Custom",
+            "value": "ratio_custom_1",
+            "label": "Custom 1(128%)"
+          }
+        ]
+      },          
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },      
+      {
+        "type": "select",
+        "id": "layout",
+        "default": "container",
+        "options": [
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "color",
+        "id": "cl_bg",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,30px,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }
+    ],
+	"blocks": [{
+    "type": "img",
+    "name": "Image slide (Parent)",
+    "settings": [
+      {
+         "type": "image_picker",
+         "id": "image",
+         "label": "Image"/*,
+         "info": "570 x 730px .jpg recommended"*/
+	  },     
+      {
+        "type": "url",
+        "id": "link_img1",
+        "label": "Link image",
+        "info": "The whole image becomes clickable."
+      },
+      {
+        "type": "select",
+        "id": "open_link",
+        "options": [
+          {
+            "value": "_self",
+            "label": "Current window (_self)"
+          },
+         {
+            "value": "_blank",
+            "label": "New window (_blank)"
+          }
+        ],
+        "label": "Open link in",
+        "default": "_blank"
+      },
+      {
+         "type": "header",
+         "content": "== Caption settings"
+       },
+      {
+        "type": "select",
+        "id": "caption_w",
+        "default": "2",
+        "options": [
+         {
+            "value": "1",
+            "label": "Container"
+         },
+         {
+            "value": "2",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Caption Width"
+      },
+      {
+         "type": "range",
+         "id": "cap_v_pos",
+         "label": "Caption vertical position",
+         "default": 50,
+         "min": 0,
+         "max": 100,
+         "step": 1,
+         "unit": "%"
+      },
+      {
+         "type": "range",
+         "id": "cap_h_pos",
+         "label": "Caption horizontal position",
+         "default": 39,
+         "min": 0,
+         "max": 100,
+         "step": 1,
+         "unit": "%"
+      },
+      {
+        "type": "select",
+        "id": "txt_align",
+        "label": "Text alignment",
+        "default": "tl_md",
+        "options": [
+          {
+            "value": "tl_md",
+            "label": "Left"
+          },
+          {
+            "value": "tc_md",
+            "label": "Center"
+          },
+          {
+            "value": "tr_md",
+            "label": "Right"
+          }
+        ]
+      }   
+      ]
+    },
+
+    {
+      "type": "hd",
+      "name": "Heading",
+      "settings": [
+          {
+            "type": "textarea",
+            "id": "title",
+            "label": "Heading",
+            "default": "Best shopify theme 2021"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Color Text",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "fw_text",
+            "min": 400,
+            "max": 800,
+            "step": 100,
+            "label": "Font weight",
+            "default": 600
+          },
+          {
+            "type": "range",
+            "id": "fs_text",
+            "min": 20,
+            "max": 70,
+            "step": 0.5,
+            "label": "Font size",
+            "unit": "px",
+            "default": 30
+          },
+          {
+            "type": "range",
+            "id": "lh_text",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "label": "Line Height",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "fs_mb_text",
+            "min": 10,
+            "max": 50,
+            "step": 0.5,
+            "label": "Font size (mobile)",
+            "unit": "px",
+            "default": 15
+          },
+          {
+            "type": "range",
+            "id": "lh_mb_text",
+            "min": 0,
+            "max": 50,
+            "step": 0.5,
+            "label": "Line Height (mobile)",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_mb_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          }
+        ]
+    },
+    {
+      "type": "subhd",
+      "name": "Sub Heading",
+      "settings": [
+          {
+            "type": "select",
+            "id": "font",
+            "default": "f__libre",
+            "options": [
+             {
+                "value": "f_body",
+                "label": "Body font"
+             },
+             {
+                "value": "f__libre",
+                "label": "Sub title font"
+              }
+            ],
+            "label": "Sub Heading use font:"
+          },
+          {
+            "type": "textarea",
+            "id": "title",
+            "label": "Heading",
+            "default": "Shopify theme"
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Color Text",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "fw_text",
+            "min": 400,
+            "max": 800,
+            "step": 100,
+            "label": "Font weight",
+            "default": 400
+          },
+          {
+            "type": "range",
+            "id": "fs_text",
+            "min": 10,
+            "max": 50,
+            "step": 0.5,
+            "label": "Font size",
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "lh_text",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "label": "Line Height",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "fs_mb_text",
+            "min": 10,
+            "max": 50,
+            "step": 0.5,
+            "label": "Font size (mobile)",
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "lh_mb_text",
+            "min": 0,
+            "max": 50,
+            "step": 0.5,
+            "label": "Line Height (mobile)",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_mb_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "checkbox",
+            "id": "hide",
+            "label": "Hidden on mobile?",
+            "default": false
+          }
+        ]
+    },
+    {
+      "type": "txt",
+      "name": "Content",
+      "settings": [
+          {
+            "type": "textarea",
+            "id": "title",
+            "label": "Content",
+            "default": "After many months design and development raking over every detail of what a modern online retailer needs,<br> Kalles is ready to take your online empire to the next level."
+          },
+          {
+            "type": "color",
+            "id": "color",
+            "label": "Color Text",
+            "default": "#fff"
+          },
+          {
+            "type": "range",
+            "id": "fw_text",
+            "min": 400,
+            "max": 800,
+            "step": 100,
+            "label": "Font weight",
+            "default": 400
+          },
+          {
+            "type": "range",
+            "id": "fs_text",
+            "min": 10,
+            "max": 50,
+            "step": 0.5,
+            "label": "Font size",
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "lh_text",
+            "min": 0,
+            "max": 100,
+            "step": 1,
+            "label": "Line Height",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "fs_mb_text",
+            "min": 10,
+            "max": 50,
+            "step": 0.5,
+            "label": "Font size (mobile)",
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "lh_mb_text",
+            "min": 0,
+            "max": 50,
+            "step": 0.5,
+            "label": "Line Height (mobile)",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "range",
+            "id": "ls_mb_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          },
+          {
+            "type": "checkbox",
+            "id": "hide",
+            "label": "Hidden on mobile?",
+            "default": false
+          }
+        ]
+    },
+    {
+      "type": "btn",
+      "name": "Button",
+      "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Button label",
+            "default": "Shop Now"
+          },
+          {
+            "type": "url",
+            "id": "btn_link",
+            "label": "Button link (Optional)"
+          },  
+          {
+            "type": "color",
+            "id": "cl_txt",
+            "label": "Text color",
+            "default": "#fff"
+          },
+          {
+            "type": "color",
+            "id": "cl_bg",
+            "label": "Background color",
+            "default": "#222"
+          },
+          {
+            "type": "color",
+            "id": "cl_bd",
+            "label": "Border color",
+            "default": "#222"
+          },
+          {
+            "type": "range",
+            "id": "fs_text",
+            "min": 10,
+            "max": 40,
+            "step": 0.5,
+            "label": "Font size",
+            "unit": "px",
+            "default": 14
+          },
+          {
+            "type": "range",
+            "id": "fw_text",
+            "min": 400,
+            "max": 600,
+            "step": 100,
+            "label": "Font weight",
+            "default": 600
+          },
+          { 
+            "type": "range",
+            "id": "h",
+            "min": 40,
+            "max": 80,
+            "step": 0.5,
+            "label": "Min height button",
+            "default": 40
+          },
+          {
+            "type": "range",
+            "id": "ls_text",
+            "min": 0,
+            "max": 10,
+            "step": 0.1,
+            "label": "Letter spacing",
+            "info": "set is '0' use to default",
+            "unit": "px",
+            "default": 0
+          }         
+        ]
+    },
+    {
+      "type": "html",
+      "name": "HTML",
+      "settings": [
+          {
+            "type": "html",
+            "id": "html",
+            "label": "Custom HTMl",
+            "default": "<h3>Best shopify theme 2020<\/h3>"
+          }
+        ]
+    },
+    {
+      "type": "space",
+      "name": "Space between",
+      "settings": [
+          {
+            "type": "range",
+            "id": "sp",
+            "min": 5,
+            "max": 105,
+            "step": 1,
+            "label": "Space",
+            "unit": "px",
+            "default": 40
+          }          
+        ]
+    }],
+    "presets": [
+      {
+        "name": "2. Collection banner",
+        "category": "Collections",
+        "blocks": [
+          { "type": "img" }
+        ]
+      }
+    ]
+  }
+{% endschema %}

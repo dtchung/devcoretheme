@@ -1,0 +1,92 @@
+{%- liquid
+  assign search_url = routes.search_url
+  assign rtl = settings.use_rtl
+  if rtl 
+    assign ltr = false 
+  else 
+    assign ltr = true  
+  endif -%}
+
+<!--  /End check -->
+<!--  Check and get sticky menu-->
+{% if settings.menu_sticky  %}
+	{% assign  menu_sticky = true %}
+{% else %}
+	{% assign  menu_sticky = false %}
+{% endif %}
+{% assign import_header = section.settings.choose_header | plus: 0%}
+<!--/End check -->
+<div class="{% if import_header == 6 %} header-nav-wapper {% else %}header-nav container-vertical-wapper {% endif %}">
+  {% if import_header == 6  %}
+  	<div class="container main-menu-wapper">
+    <div class="header-nav">
+  {% endif %}
+  <div class="header-nav-inner">
+    <div class="box-header-nav">
+      <div class="container-wapper">
+        <a class="menu-bar mobile-navigation" href="#">
+          <span class="icon">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+          <span class="text">Main Menu</span>
+        </a>
+        <ul id="menu-main-menu" class="main-menu clone-main-menu" style="text-align: {{section.settings.align}}">
+          {%- for type in tp_blocks -%}
+     
+              {%- assign arrTyCurent = blocktp |remove:'t4,' | split:',' | where:type -%}
+              {%- assign arrblock = se_blocks | where: "type", type -%}
+              {%- assign block = arrblock[arrTyCurent.size] -%}
+              {%- assign blocktp = blocktp | append:',' | append:type -%}
+
+              {%- case block.type -%}
+                 {%- when 'dropdown' -%}
+                    <li id="item_{{block.id}}" class="type_{{block.type}} menu-item menu-item-has-children"  {{ block.shopify_attributes }}>
+                       <a class="kt-item-title" href="{{block.settings.url}}" target="{{block.settings.open_link}}"{% if block.settings.cus_cl %} style="color:{{block.settings.cl}}"{% endif %}>
+                         {% render 'title_menu',block:block %}
+                      </a>
+                       {%- if linklists[block.settings.menu].links.size > 0 %}                      
+                         <div class="submenu" >
+                           	<div id="bk_{{block.id}}" class="lazy_menu lazyload" data-include="{{search_url}}?q={{block.id}}&view=item_menu">
+                           		<div class="loading_bg"></div>
+                         	</div>  
+                      	</div>
+                      {% endif %}
+                    </li>                
+                 {%- when 'simple' -%}
+                    {% if block.settings.url != blank %}
+                        <li id="item_{{block.id}}" class="menu-item type_simple" {{ block.shopify_attributes }}>
+                          <a class="kt-item-title" href="{{block.settings.url}}" target="{{block.settings.open_link}}"{% if block.settings.cus_cl %} style="color:{{block.settings.cl}}"{% endif %}>
+                            {%- render 'title_menu',block:block -%}
+                          </a>
+                        </li>
+                    {% endif %}
+                 {%- else -%}
+                    <li id="item_{{block.id}}" class="type_{{block.type}} menu-item menu-item-has-children" {{ block.shopify_attributes }}>
+                       <a class="kt-item-title" href="{{block.settings.url}}" target="{{block.settings.open_link}}"{% if block.settings.cus_cl %} style="color:{{block.settings.cl}}"{% endif %}>
+                         {%- render 'title_menu',block:block -%}
+                      </a>
+                       <div class="{{block.settings.wid}} submenu mega-menu mega-menu1">
+                         <div class="container" style="width:100%">
+                           <div id="bk_{{block.id}}" class="row lazy_menu lazyload" style="margin:0px;" data-include="{{search_url}}?q={{block.id}}&view=item_menu" >
+                             <div class="loading_bg"></div>
+                           </div>
+                         </div>
+                      </div>
+                    </li>
+              {%- endcase -%}
+           {%- endfor -%}          
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% if import_header == '6' %}
+      </div>
+  </div>>
+  {% endif %}
+</div>
+<input type="hidden" id="sticky_menu" value="{{settings.menu_sticky}}" />
+<input type="hidden" id="enable_effect_menu" value="{{settings.menu_use_animation}}" />
+<input type="hidden" id="effect_menu" value="{{settings.menu_type_animation}}" />
+

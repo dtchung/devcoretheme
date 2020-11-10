@@ -1,0 +1,440 @@
+{%- liquid
+  assign sid = section.id
+  assign col = section.settings.col_pr
+  assign col_tb = section.settings.col_pr_tb
+  assign source = section.settings.source
+  assign icon_des = section.settings.icon_des
+  assign icon_size = section.settings.icon_size
+  assign icon_align = section.settings.icon_align
+  assign col_mb = section.settings.col_mb
+  if col_mb == 'fl_wrap'
+     assign cl_mb = 'col-12'
+  else 
+    assign cl_mb = 'col-9'
+  endif
+  if icon_des == 'circle'
+    if icon_size == 'small'
+      assign img_size = '120x'
+    elsif icon_size == 'medium'
+      assign img_size = '160x'
+    else 
+      assign img_size = '240x'
+    endif
+  else
+    if icon_size == 'small'
+      assign img_size = '80x'
+    elsif icon_size == 'medium'
+      assign img_size = '100x'
+    else 
+      assign img_size = '120x'
+    endif
+  endif -%}
+{%- for i in (1..1) -%}
+  {%- if section.settings.cp_code and request.page_type == 'index' %}<div class="dn tc mt__40 mb__40 cp_cd_js"><input type="text" class="dcp_cd_ip" value='<div class="inc_lz inc_ins_laz" data-include="/search/?section_id={{sid}}"><div class="loading_bg"></div></div>'><button class="dcp_cd_btn">Copy Shortcode</button></div>{% endif -%}
+  {%- if section.settings.hidden and request.page_type == 'index' %}{% break %}{% endif -%}
+    <div class="nt_se_{{sid}} {{section.settings.layout}}">
+      <div class="row {{col_mb}} fl_wrap_md oah use_border_{{section.settings.border}}">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}{%- assign image = block.settings.image -%}
+            <div class="{{cl_mb}} col-md-{{col_tb}} col-lg-{{col}} bl_{{block.id}}">
+              <div class="nt_shipping nt_icon_{{icon_des}} {{icon_align}} row no-gutters ">
+                {%- if image != blank -%}
+                  <div class="col-auto icon {{icon_size}} ship_img lazyload" data-bg="{{image| img_url:img_size}}"></div>
+                {%- elsif source == 'fa' -%}
+                  <div class="col-auto icon {{icon_size}}"><i class="{{source}} {{block.settings.icon}}"></i></div>
+                {%- else -%}
+                  <div class="col-auto icon {{icon_size}}"><i class="{{source}} {{block.settings.icon}}"></i></div>
+                {%- endif -%}
+                <div class="col content">
+                  <h3 class="title">{{block.settings.title}}</h3>
+                  <p>{{block.settings.text}}</p>
+                </div>
+              </div>
+            </div>
+          {%- endfor -%}
+        {%- endif -%}
+      </div>
+    </div>
+{%- endfor -%}
+{%- liquid
+  assign mg = section.settings.mg
+  assign pd = section.settings.pd
+  assign mg_mb = section.settings.mg_mb
+  assign pd_mb = section.settings.pd_mb
+  assign sid = section.id -%}
+
+{%- capture style -%}
+	{%- if section.settings.cl_bg != blank -%}#shopify-section-{{sid}} {background-color: {{section.settings.cl_bg}} !important;}{%- endif -%}
+	{%- if mg != blank or pd != blank -%} 
+	.nt_se_{{sid}} {
+	   {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+		   margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+		   {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+	   {%- endif -%}
+	   {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+	       padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+	   {%- endif -%}
+	}
+	{%- endif -%}
+	{%- if mg_mb != blank or pd_mb != blank -%} 
+	@media only screen and (max-width: 767px) {
+		.nt_se_{{sid}} {
+		   {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+			   margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+			   {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+		   {%- endif -%}
+		   {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+		       padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+		   {%- endif -%}
+		}
+	}
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+{%- style -%}
+.nt_se_{{sid}} .use_border_true .nt_shipping:after {border-color:{{section.settings.cl_bd}} }
+.nt_se_{{sid}} .icon {color:{{section.settings.cl_ic}} }.nt_se_{{sid}} .content {color:{{section.settings.cl_cot}} }.nt_se_{{sid}} .content h3 {color:{{section.settings.cl_hd}} }
+{%- endstyle -%}
+
+{%- schema -%}
+  {
+    "name": "Shipping",
+    "class": "nt_section type_shipping",
+    "max_blocks": 30,
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "select",
+        "id": "source",
+        "label": "Source icon",
+        "default": "fa",
+        "options": [
+          {
+            "value": "fa",
+            "label": "Font awesome"
+          },
+          {
+            "value": "las",
+            "label": "Line awesome"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "content": "[Get icons Pe icon](https://fontawesome.com/icons?d=gallery)"
+      },
+      {
+        "type": "paragraph",
+        "content": "[Get icons Line awesome](https://icons8.com/line-awesome)"
+      },
+      {
+        "type": "select",
+        "id": "icon_des",
+        "label": "Icon Design",
+        "default": "deafult",
+        "options": [
+         {
+            "label": "Deafult",
+            "value": "deafult"
+          },
+          {
+            "label": "Circle",
+            "value": "circle"
+          }
+        ]
+      },
+     {
+      "type": "select",
+      "id": "icon_align",
+      "label": "Icon align",
+      "default": "tl",
+      "options": [
+        {
+          "label": "Left",
+          "value": "tl"
+        },
+        {
+          "label": "Center",
+          "value": "tc"
+        },
+        {
+          "label": "Right",
+          "value": "tr"
+        }
+      ]
+    },
+      {
+        "type": "select",
+        "id": "icon_size",
+        "label": "Icon size",
+        "default": "medium",
+        "options": [
+         {
+            "label": "Small",
+            "value": "small"
+          },
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr",
+        "label": "Shipping columns",
+        "default": "3",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          },
+          {
+            "value": "15",
+            "label": "5"
+          },
+          {
+            "value": "2",
+            "label": "6"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr_tb",
+        "label": "Shipping columns Tablet",
+        "default": "6",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_mb",
+        "label": "Shipping columns Mobile",
+        "default": "fl_nowrap",
+        "options": [
+          {
+            "value": "fl_wrap",
+            "label": "Default"
+          },
+          {
+            "value": "fl_nowrap",
+            "label": "Modern"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden",
+        "label": "Hidden Section?",
+        "default": false,
+        "info": "Hidden section on home page, but still visible on blog posts, product page, pages as shortcode."
+      },
+      {
+        "type": "checkbox",
+        "id": "cp_code",
+        "label": "Show copy shortcode?",
+        "default": false,
+        "info": "Copy shortcode only show on admin editor."
+      },
+      {
+        "type": "checkbox",
+        "id": "border",
+        "label": "Use border?",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "options": [
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "color",
+        "id": "cl_bd",
+        "label": "Border color",
+        "default": "#ddd"
+      },
+      {
+        "type": "color",
+        "id": "cl_bg",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "color",
+        "id": "cl_ic",
+        "label": "Icon color",
+        "default": "#9e9e9e"
+      },
+      {
+        "type": "color",
+        "id": "cl_hd",
+        "label": "Heading color",
+        "default": "#222222"
+      },
+      {
+        "type": "color",
+        "id": "cl_cot",
+        "label": "Content color",
+        "default": "#878787"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "shipping",
+        "name": "Shipping",
+        "settings": [
+          {
+            "type": "header",
+            "content": "== IMG Options"
+          },
+          {
+             "type": "image_picker",
+             "id": "image",
+             "label": "Choose Image",
+             "info": "if image chosened icon set be disable"
+           },
+          {
+            "type": "header",
+            "content": "== Icon Options"
+          },
+          {
+             "type": "text",
+             "id": "icon",
+             "label": "Icons name",
+             "default": "pe-7s-car"
+          },
+          {
+            "type": "header",
+            "content": "== Text Options"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading",
+            "default": "Add a title"
+          },
+          {
+             "type": "textarea",
+             "id": "text",
+             "label": "Text",
+             "default": "Use this text to describe."
+           }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "1. Shipping",
+        "category": "Text",
+        "blocks": [
+          {
+            "type": "shipping",
+            "settings": {
+              "icon": "fa-truck",
+              "title": "FREE SHIPPING",
+              "text": "Free shipping on all US order or order above $100"
+            }
+          },
+          {
+            "type": "shipping",
+            "settings": {
+              "icon": "fa-life-ring",
+              "title": "SUPPORT 24\/7",
+              "text": "Contact us 24 hours a day, 7 days a week"
+            }
+          },
+          {
+            "type": "shipping",
+            "settings": {
+              "icon": "fa-retweet",
+              "title": "30 DAYS RETURN",
+              "text": "Simply return it within 30 days for an exchange."
+            }
+          },
+          {
+            "type": "shipping",
+            "settings": {
+              "icon": "fa-shield",
+              "title": "100% PAYMENT SECURE",
+              "text": "We ensure secure payment with PEV"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

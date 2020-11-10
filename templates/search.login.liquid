@@ -1,0 +1,25 @@
+{%- layout none -%}
+
+{% form 'customer_login', class:'login login-register-form content-form ' %}        
+        {{ form.errors | default_errors }}
+	    <div class="mini_cart_header flex fl_between al_center"><h3 class="widget-title tu fs__16 mg__0">{{'layout.customer.log_in' | t}}</h3><i class="close_popup_ajax fa fa-close"></i></div>
+        <div class="login-form">  
+          <h5 class="note-title">{{'layout.customer.account' | t}}</h5>         
+          <span class="label-text">{{'customer.login.email' | t}}</span>
+          <input type="text" class="input-info {% if form.errors contains 'email' %} input--error{% endif %}" name="customer[email]" id="CustomerEmail" autofocus>
+          {% if form.password_needed %}           
+            <span class="label-text">{{'customer.login.password' |t}}</span>
+            <input class="input-info {% if form.errors contains 'password' %} input--error{% endif %}" type="password" name="customer[password]" id="CustomerPassword"/>
+          {% endif %}
+         
+          <div class="check-box">            
+            <input class="login-check" type="checkbox" id="login-check" name="rememberme" value="forever" checked disabled><label class="text-label" for="login-check"> Remember me </label>	
+            {% if form.password_needed %}
+            	<a href="#RecoverPasswordForm" id="RecoverPassword" class="forgot">{{ 'customer.login.forgot_password' | t }}</a>
+            {% endif %}
+          </div>
+          <div class="group-button">            
+            <input type="submit" class="button submit" name="login" value="{{ 'customer.login.sign_in' | t }}"/>
+          </div>
+        </div>
+{% endform %}

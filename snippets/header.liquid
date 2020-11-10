@@ -1,0 +1,76 @@
+<header>
+  {% case section.settings.choose_header %}
+        {% when "1" %}
+  			{% assign text_head = "header layout2 no-prepend-box-sticky" %}
+        {% when "2" %}
+        	{% assign text_head = "header layout2 header-home2 no-prepend-box-sticky" %}
+        {% when "3" %}
+        	{% assign text_head = "header layout2 no-prepend-box-sticky" %}
+        {% when "4" %}
+        	{% assign text_head = "header layout2 no-prepend-box-sticky" %}
+        {% when "5"%}
+  			{% assign text_head = "header layout2 layout4" %}
+  		{% when "6"%}
+  			{% assign text_head = "header layout2 no-prepend-box-sticky" %}
+  		{% when "7"%}
+  			{% assign text_head = "header layout2 no-prepend-box-sticky" %}
+  {% endcase %}
+  
+  <div class="{{text_head}}">
+    {% include 'header-setting'%}
+    <div class="main-header">
+      <div class="top-header">
+        <div class="this-sticky">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12  left-content">
+                <div class="logo">
+                  {% if section.settings.logo_url != blank %}
+                    <a href="/" class="site-header__logo-image">
+                      <img alt="{{ shop.name }}" src="{{section.settings.logo_url}}"/>
+                    </a>
+                  {% else %}
+                  	<a class="site-header__logo-link" href="/" itemprop="url">{{ shop.name }}</a>
+                  {% endif %} 
+                </div>
+              </div>
+              <div class="col-lg-8 col-md-4 col-sm-4 col-xs-6 midle-content">
+                {%- render 'menu',se_blocks:se_blocks,tp_blocks:tp_blocks -%} 
+              </div>								
+              <div class="col-lg-2 col-md-5 col-sm-5 col-xs-6 right-content">
+                <ul class="header-control">
+                  <li class="box-minicart">
+                    {% include'header-page-cart'%} 
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="header-nav-wapper ">
+        <div class="container main-menu-wapper">
+          <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-12 left-content">
+              {% include 'category-menu'%}             
+            </div>
+            <div class="col-lg-7 col-md-5 col-sm-8 col-xs-8 col-ts-12 middle-content">
+              {% include'header-page-search'%}
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-4 col-ts-12 right-content">
+              <div class="hotline">
+                <div class="icon">
+                  <i class="fa fa-phone" aria-hidden="true"></i>
+                </div>
+                <div class="content">
+                  <span class="text">{{section.settings.header_phone_title_home1}}</span>
+                  <span class="number">{{section.settings.header_phone_contact_home1}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

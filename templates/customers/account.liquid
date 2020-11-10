@@ -1,0 +1,164 @@
+<!-- /templates/customers/account.liquid -->
+{% comment %}
+
+For all available customer liquid tags:
+- http://docs.shopify.com/themes/liquid-variables/customer
+
+{% endcomment %}
+<div class="main-content shop-page login-page">
+  <div class="container">
+    {% include 'breadcrumb' %}
+
+    <div class="container block-page-login" style="margin: 32px 0;">
+      <div class="">
+         <div class="row">  
+           <div id="primary" class="col-xs-12 col-sm-12 col-md-12">
+             <h1 class="page-title">
+               {{'customer.account.title'|t}}
+             </h1>
+             <div class="block-new-customer ">
+               <div class="">
+                 <div class="top-account" style="">
+
+                   {% if shop.customer_accounts_enabled %}
+                   {% if customer  %}
+                   <div class="acc-form">
+                     <p class="myaccount_user">
+                       Hello <strong>{{ customer.email }}</strong> (Do you want to <a href="/account/logout">Sign out ?</a>). From your account dashboard you can view your recent orders and add new address.</p>
+
+                   </div>
+                   {% else %}
+                   {% form 'customer_login' %}
+                   <div class="acc-form">
+                     <h3 class="widget-title">{{ 'customer.login.title' | t }}</h3>
+                     {{ form.errors | default_errors }}
+                     <p class="login-username"> 
+                       <label>{{ 'customer.login.email' | t }}</label> 
+                       <input type="email" name="customer[email]" id="CustomerEmail" class="{% if form.errors contains 'email' %} error{% endif %}" autofocus>
+                     </p>
+                     {% if form.password_needed %}
+                     <p class="login-password"> 
+                       <label>{{ 'customer.login.password' | t }}</label> 
+                       <input type="password" value="" name="customer[password]" id="CustomerPassword" class="{% if form.errors contains 'password' %} error{% endif %}">
+                     </p>
+                     {% endif %}
+                     <p class="login-submit"> 
+                       <input type="submit" value="{{ 'customer.login.sign_in' | t }}" class="button-primary">
+                     </p>
+                     {% if form.password_needed %}
+                     <div class="acc-link"> 
+                       <a href="#" class="lost-pwlink">{{ 'customer.login.forgot_password' | t }}</a> <a href="/account/register">{{ 'customer.login.titles' | t }}</a>
+                     </div>
+                     {% endif %}
+
+                   </div>
+                   {% endform %}
+                   {% endif %}
+                   {% endif %}
+                 </div>
+
+                 <div class="address-box">
+                   <h4>My Addresses</h4>
+                   <p class="myaccount_address" style="margin-left:10px;">
+                     The following addresses will be used on the checkout page by default.</p>
+                   <div class="address-col2">
+                     <div class="col-1 address">
+                       <h4>{{ 'customer.orders.title' | t }}</h4>
+
+                       {% comment %}
+                       If we have past orders, loop through each one
+                       {% endcomment %}
+                       {% paginate customer.orders by 20 %}
+                       {% if customer.orders.size != 0 %}
+
+                       <div class="table-wrap" style="margin-left:10px;">
+                         <table class="full">
+                           <thead>
+                             <tr>
+                               <th>{{ 'customer.orders.order_number' | t }}</th>
+                               <th>{{ 'customer.orders.date' | t }}</th>
+                               <th>{{ 'customer.orders.payment_status' | t }}</th>
+                               <th>{{ 'customer.orders.fulfillment_status' | t }}</th>
+                               <th>{{ 'customer.orders.total' | t }}</th>
+                             </tr>
+                           </thead>
+                           <tbody>
+                             {% for order in customer.orders %}
+                             <tr>
+                               <td>{{ order.name | link_to: order.customer_url }}</td>
+                               <td>{{ order.created_at | date: format: 'month_day_year' }}</td>
+                               <td>{{ order.financial_status_label }}</td>
+                               <td>{{ order.fulfillment_status_label }}</td>
+                               <td>{{ order.total_price | money }}</td>
+                             </tr>
+                             {% endfor %}
+                           </tbody>
+                         </table>
+                       </div>
+
+                       {% else %}
+
+                            <p style="margin-left:10px;">{{ 'customer.orders.none' | t }}</p>
+
+                       {% endif %}
+                       {% if paginate.pages > 1 %}
+                       <hr>
+                       <div class="pagination">
+                         {{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}
+                       </div>
+                       {% endif %}
+                       {% endpaginate %}
+                     </div>
+
+                     <div class="col-2 address">
+                       <h4>{{ 'customer.account.details' | t }}</h4>
+
+                       <a style="margin-left:10px;" class="view-address" href="/account/addresses">{{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})</a>
+
+                       <h5>{{ customer.name }}</h5>
+
+                       {% if customer.default_address != nil %}
+
+                       <p style="margin-left:10px;">
+                         {{ customer.default_address.address1 }}<br>
+
+                         {% if customer.default_address.address2 != "" %}
+                         {{ customer.default_address.address2 }}<br>
+                         {% endif %}
+
+                         {% if customer.default_address.city != "" %}
+                         {{ customer.default_address.city }}<br>
+                         {% endif %}
+
+                         {% if customer.default_address.province_code != "" %}
+                         {{ customer.default_address.province_code | upcase }}<br>
+                         {% endif %}
+
+                         {% if customer.default_address.zip != "" %}
+                         {{ customer.default_address.zip | upcase }}<br>
+                         {% endif %}
+
+                         {% if customer.default_address.country != "" %}
+                         {{ customer.default_address.country }}<br>
+                         {% endif %}
+
+                         {% if customer.default_address.phone != "" %}
+                         {{ customer.default_address.phone }}
+                         {% endif %}
+                       </p>
+
+                       {% endif %}
+
+
+                     </div>
+                   </div>
+                 </div>
+
+               </div>
+             </div>
+           </div>
+         </div>
+        </div>
+    </div>
+  </div>
+</div>

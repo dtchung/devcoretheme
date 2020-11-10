@@ -1,0 +1,328 @@
+{%- liquid
+	assign sid = section.id  
+  	assign image = section.settings.image
+  	assign active_first = section.settings.active_first
+  	assign se_blocks = section.blocks
+  	assign check = false
+	assign check_first = true 
+-%}
+{%- for i in (1..1) -%}
+  
+  <div class="nt_se_{{sid}} {{section.settings.layout}} faq_des2">   
+    <div class="wrap_title">
+      <h3 class="section-title"><span > {{section.settings.title}}</span></h3>        
+      <span class="section-subtitle">{{section.settings.sub_title}}</span>
+    </div> 
+    <div class="row shipping_wrap">      
+      {%- if se_blocks.size > 0 -%}
+
+           {%- capture get_vl -%}
+             {%- for block in se_blocks -%}
+                {%- if block.type == 'faq' -%}
+                <div class="col-12 entry-content sp-tab des_mb_2 des_style_2{%- if check_first and active_first %} active{%- endif -%}" id="tab_{{block.id}}" {{ block.shopify_attributes }}>
+                  <div class="js_ck_view"></div><div class="heading bgbl dn"><a class="tab-heading flex al_center fl_between pr cd  " href="#tab_{{block.id}}" rel="nofollow"><span class="txt_h_tab">{{block.settings.title}}</span><span class="nav_link_icon ml__5"></span></a></div>
+                  <div class="sp-tab-content">{{block.settings.content}}</div>
+                </div>{%- assign check_first = false -%}
+               {%- else -%}[break_col]{%- assign check = true %}{% assign check_first = true -%}
+               {%- endif -%}
+             {%- endfor -%}
+           {%- endcapture -%}
+
+           {%- if check -%} {%- assign arr = get_vl | split:'[break_col]' -%}
+             <div class="row">
+               <div class="shopify-tabs sp-tabs col-12 col-lg-6"><div class="row">{{arr[0]}}</div></div>
+               <div class="shopify-tabs sp-tabs col-12 col-lg-6"><div class="row">{{arr[1]}}</div></div>
+             </div>
+           {%- else -%}<div class="col-12"><div class="row shopify-tabs sp-tabs">{{get_vl}}</div></div>
+           {%- endif -%} 
+
+       {%- endif -%}
+    </div>
+  </div>
+{%- endfor -%}
+{%- liquid
+  assign mg = section.settings.mg
+  assign pd = section.settings.pd
+  assign mg_mb = section.settings.mg_mb
+  assign pd_mb = section.settings.pd_mb
+  assign sid = section.id -%}
+
+{%- capture style -%}	
+	{%- if mg != blank or pd != blank -%} 
+      .nt_se_{{sid}} {
+         {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+             margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+             {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+         {%- endif -%}
+         {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+             padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+         {%- endif -%}
+      }
+	{%- endif -%}
+	{%- if mg_mb != blank or pd_mb != blank -%} 
+      @media only screen and (max-width: 767px) {
+          .nt_se_{{sid}} {
+             {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+                 margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+                 {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+             {%- endif -%}
+             {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+                 padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+             {%- endif -%}
+          }
+      }
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+
+{%- style -%}
+
+.nt_se_{{sid}}{background-color: {{section.settings.se_bg}} }.nt_se_{{sid}}.nt_bg_overlay:after{ background-color: {{section.settings.cl_overlay}};opacity: {{section.settings.cl_opacity | divided_by: 100.00}} }
+.nt_se_{{sid}} .sp-tab .tab-heading {
+    color: {{section.settings.hd_cl}};
+}
+.nt_se_{{sid}} .sp-tab.active .tab-heading {
+    color: {{section.settings.hd_cl_atc}};
+}
+.nt_se_{{sid}} .heading.bgbl {
+    background: {{section.settings.hd_bg}};
+}
+.nt_se_{{sid}} .active .heading.bgbl {
+   background: {{section.settings.hd_bg_atc}};
+}
+.nt_se_{{sid}} .nav_link_icon {
+  background: {{section.settings.btn_bg}};color: {{section.settings.btn_cl}}
+}
+.nt_se_{{sid}} .active .nav_link_icon {
+  background: {{section.settings.btn_bg_atc}}; color: {{section.settings.btn_cl_atc}}
+}
+.nt_se_{{sid}} .sp-tab-content {
+    background: {{section.settings.ct_bg}};color: {{section.settings.ct_cl}};
+}
+.nt_se_{{sid}} .sp-tab-content a {
+   color: {{section.settings.ct_cl}};
+}
+.nt_se_{{sid}} .sp-tab-content,.nt_se_{{sid}} .des_style_2.sp-tab>.sp-tab-content {
+   border-color: {{section.settings.bd_cl}};
+}
+{%- endstyle -%}
+{%- schema -%}
+  {
+    "name": "Shipping text simple",
+    "max_blocks": 30,
+    "class": "nt_section type_faq",    
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "FAQ'S"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text"
+      },
+      {
+        "type": "checkbox",
+        "id": "active_first",
+        "label": "Enable active first faq?",
+        "default": true
+      },      
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Background Image"
+      },
+      {
+        "type": "color",
+        "id": "cl_overlay",
+        "label": "Overlay",
+        "default": "#000"
+      },
+      {
+        "type": "range",
+        "id": "cl_opacity",
+        "label": "Overlay opacity",
+        "default": 0,
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%"
+      },     
+      {
+        "type": "header",
+        "content": "== Design Color"
+      },
+      {
+        "type": "color",
+        "id": "tt_cl",
+        "default": "#fff",
+        "label": "Section title Color"
+      },
+      {
+        "type": "color",
+        "id": "hd_bg",
+        "default": "#fff",
+        "label": "Heading Background"
+      },
+      {
+        "type": "color",
+        "id": "hd_cl",
+        "default": "#222",
+        "label": "Heading color"
+      },
+      {
+        "type": "color",
+        "id": "hd_bg_atc",
+        "default": "#8e672f",
+        "label": "Heading Background active"
+      },
+      {
+        "type": "color",
+        "id": "hd_cl_atc",
+        "default": "#fff",
+        "label": "Heading color active"
+      },
+      {
+        "type": "color",
+        "id": "btn_bg",
+        "default": "#8e672f",
+        "label": "Button Background"
+      },
+      {
+        "type": "color",
+        "id": "btn_cl",
+        "default": "#fff",
+        "label": "Button color"
+      },
+      {
+        "type": "color",
+        "id": "btn_bg_atc",
+        "default": "#fff",
+        "label": "Button Background active"
+      },
+      {
+        "type": "color",
+        "id": "btn_cl_atc",
+        "default": "#8e672f",
+        "label": "Button color active"
+      },
+      {
+        "type": "color",
+        "id": "ct_bg",
+        "default": "#fff",
+        "label": "Content Background"
+      },
+      {
+        "type": "color",
+        "id": "ct_cl",
+        "default": "#222",
+        "label": "Content color"
+      },
+      {
+        "type": "color",
+        "id": "bd_cl",
+        "default": "#f5f5f5",
+        "label": "Content Border Color"
+      },
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },      
+      {
+        "type": "select",
+        "id": "layout",
+        "options": [
+         {
+            "value": "nt_boxed",
+            "label": "Boxed"
+         },
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }  
+     
+    ],
+    "blocks": [{
+    "type": "faq",
+    "name": "FAQ",
+    "settings": [
+      {
+      "type": "text",
+      "id": "title",
+      "default": "Question and answer",
+      "label": "Heading"
+      },
+      {
+      "type": "richtext",
+      "id": "content",
+      "default": "<p>This section doesn’t currently include any content. <b>Add content to this section using the sidebar.<\/b><\/p>",
+      "label": "Text"
+      }
+      ]
+    },
+      {
+      "type": "break",
+      "name": "Break column",
+      "limit": 1
+      }],
+    "presets": [
+      {
+        "name": "5. FAQS",
+        "category": "Text",
+        "blocks": [
+          { "type": "faq" },
+          { "type": "faq" },
+          { "type": "faq" },
+          { "type": "faq" },
+          { "type": "faq" },
+          { "type": "faq" }
+        ]
+      }
+    ]
+  }
+{% endschema %}

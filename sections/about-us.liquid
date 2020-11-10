@@ -1,0 +1,297 @@
+{%- liquid
+	assign sid = section.id    	
+-%}
+{%- for i in (1..1) -%}
+  {%- if section.settings.cp_code and request.page_type == 'index' %}<div class="dn tc mt__40 mb__40 cp_cd_js"><input type="text" class="dcp_cd_ip" value='<div class="inc_lz inc_ins_laz" data-include="/search/?section_id={{sid}}"><div class="loading_bg"></div></div>'><button class="dcp_cd_btn">Copy Shortcode</button></div>{% endif -%}
+  {%- if section.settings.hidden and request.page_type == 'index' %}{% break %}{% endif -%}
+  <div class="nt_se_{{sid}} {{section.settings.layout}}">   
+    
+    <div class="row">
+     <div class="offset-md-2 col-12 col-md-8 tc">
+       {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+               {%- when 'heading' -%}
+                   <div class="wrap_title">
+                     <h3 class="section-title"><span > {{block.settings.title}}</span></h3>        
+                     <span class="section-subtitle">{{block.settings.sub_title}}</span>
+                   </div> 
+               {%- when 'image' -%}{%- assign image = block.settings.image -%}
+                 <div class="about_us_img border_{{block.settings.use_border}}" {{ block.shopify_attributes }}>
+                  {%- if image != blank -%} 
+                    {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+                    <img class="lazyload" src="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20{{image.width}}%20{{image.height}}%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3C%2Fsvg%3E" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-sizes="auto" alt="{{image.alt | escape}}">
+                  {%- else -%}
+                    <img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" style="max-height: 400px" data-src="https://cdn.shopify.com/s/files/1/0259/8538/4520/files/shopping-gift-wrap_1x1.jpg?v=1572830468" alt="">
+                  {%- endif -%}
+                  <span class="fr_br_1"></span><span class="fr_br_2"></span><span class="fr_br_3"></span><span class="fr_br_4"></span>
+                   {%- if block.settings.video_url != blank -%}
+                   <div class="overlay_video">
+                     <a data_js_mfp_video class="video-control__play" href="{{block.settings.video_url}}" target="_blank">
+                       <svg aria-hidden="true" focusable="false" role="presentation" class="icon icon-play" viewBox="0 0 20 40"><path fill-rule="evenodd" clip-rule="evenodd" d="M23.6 16.8L7 1.5C5.6.3 4 .2 2.9.7 1.6 1.4.8 2.7.7 3.8v31.7c0 1.8 1.1 3.3 3.1 3.3 1.5 0 2.5-.5 3.4-1.4l16.4-15.7c1.5-1.4 1.5-3.6 0-4.9z"></path></svg>
+                     </a>
+                   </div>
+                   {%- endif -%}
+                </div>
+               {%- when 'text' -%}
+                <div class=" about_us_txt" {{ block.shopify_attributes }}>{{block.settings.text}}</div> 
+               {%- else -%}
+       			{%- assign image = block.settings.image -%}
+                <div class="about_us_sig tc" {{ block.shopify_attributes }}><img class="lazyload lz_op_ef"{% if image != blank %} {% assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' %}src="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%20{{image.width}}%20{{image.height}}%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3C%2Fsvg%3E" data-src="{{ img_url }}" data-widths="[180, 360, 540, 720, 900, 1080, 1296, 1512, 1728, 2048]" data-sizes="auto" style="max-width:{{image.width}}px"{% else %} src="//cdn.shopify.com/s/files/1/0259/8538/4520/files/signature_150x.png?v=1572830297"{% endif %} alt="{{image.alt | escape}}"></div>
+            {%- endcase -%}
+          {%- endfor -%}
+       {%- else -%}
+       <div class="tc">{%- render 'no_blocks'-%}</div>   
+       {%- endif -%}
+     </div>
+   </div>
+  </div>
+{%- endfor -%}
+{%- liquid
+  assign mg = section.settings.mg
+  assign pd = section.settings.pd
+  assign mg_mb = section.settings.mg_mb
+  assign pd_mb = section.settings.pd_mb
+  assign sid = section.id -%}
+
+{%- capture style -%}	
+	{%- if mg != blank or pd != blank -%} 
+      .nt_se_{{sid}} {
+         {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+             margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+             {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+         {%- endif -%}
+         {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+             padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+         {%- endif -%}
+      }
+	{%- endif -%}
+	{%- if mg_mb != blank or pd_mb != blank -%} 
+      @media only screen and (max-width: 767px) {
+          .nt_se_{{sid}} {
+             {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+                 margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+                 {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+             {%- endif -%}
+             {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+                 padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+             {%- endif -%}
+          }
+      }
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+
+{%- schema -%}
+  {
+    "name": "About us",
+    "max_blocks": 20,
+    "class": "nt_section type_about_us",    
+    "settings": [
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+	  {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "About us"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text"
+      },      
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden",
+        "label": "Hidden Section?",
+        "default": false,
+        "info": "Hidden section on home page, but still visible on blog posts, product page, pages as shortcode."
+      },
+      {
+        "type": "checkbox",
+        "id": "cp_code",
+        "label": "Show copy shortcode?",
+        "default": false,
+        "info": "Copy shortcode only show on admin editor."
+      },    
+      
+      {
+        "type": "select",
+        "id": "layout",
+        "options": [
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }  
+     
+    ],
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text","id": "title","label": "Heading","default":"ABOUT US"
+          },
+          {
+            "type": "textarea","id": "sub_title","label": "Sub Text","default":"wellcome to kalles"
+          },
+          {
+            "type": "select",
+            "id": "sub_font",
+            "default": "2",
+            "options": [
+             {
+                "value": "1",
+                "label": "Body font"
+             },
+             {
+                "value": "2",
+                "label": "Sub title font"
+              }
+            ],
+            "label": "Sub Text use font:"
+          },
+          {
+            "type": "select","id": "style_title","label": "Design Title:",
+            "options": [
+                { "value": "title_1", "label": "Design 1"},
+                { "value": "title_2", "label": "Design 2"},
+                { "value": "title_3", "label": "Design 3"},
+                { "value": "title_4", "label": "Design 4"},
+                { "value": "title_5 lazyload", "label": "Design 5"},
+                { "value": "title_6", "label": "Design 6"},
+                { "value": "title_7 +la", "label": "Design 7 (with line-awesome)"},
+               {
+                  "value": "title_8",
+                  "label": "Design 8"
+                },
+               {
+                  "value": "title_9",
+                  "label": "Design 9"
+                },
+               {
+                  "value": "title_10",
+                  "label": "Design 10"
+                },
+               {
+                  "value": "title_11",
+                  "label": "Design 11"
+                },
+               {
+                  "value": "title_12",
+                  "label": "Design 12"
+                },
+               {
+                  "value": "title_13",
+                  "label": "Design 13"
+                }
+            ]
+          },
+          {
+            "type": "text","id": "ic_tt","label": "Style 7 icon line-awesome","default": "gem"
+          },
+          {
+            "type": "checkbox","id": "show_clpr","label": "Use icon color primary?","default": false
+          },
+          {
+            "type": "paragraph","content": "[Get icons Line awesome](https://icons8.com/line-awesome)"
+          }
+        ]
+      },
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+         {
+          "type":"image_picker","id":"image","label":"Image"
+          },
+          {
+            "type": "checkbox","id": "use_border","label": "Use border?","default": true
+          },
+          {
+             "id": "video_url","type": "video_url","label": "Video URL","accept": ["youtube", "vimeo"],"default": "https://www.youtube.com/watch?v=_9VUPq3SxOc","info": "Accepts YouTube,vimeo links"
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Content",
+        "settings": [
+         {
+          "type":"richtext","id":"text","label":"Content","default":"<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          }
+        ]
+      },
+      {
+        "type": "sig",
+        "name": "Your signature",
+        "limit": 1,
+        "settings": [
+           {
+            "type":"image_picker","id":"image","label":"Image Your signature"
+            }
+         ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "4. About us",
+        "category": "Text",
+        "blocks": [
+			{"type": "heading"},
+			{"type": "image"},
+			{"type": "text"},
+			{"type": "sig"}
+		]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,68 @@
+{% unless template contains "404"%}
+    <header>
+      <div class="header layout1 header-home2 no-prepend-box-sticky">
+        {% include 'header-setting'%}
+        <div class="main-header">
+          <div class="top-header">
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12  left-content">
+                  <div class="logo">
+                    {% if section.settings.logo_url != blank %}
+                    <a href="/" class="site-header__logo-image">
+                      <img alt="{{ shop.name }}" src="{{section.settings.logo_url}}"/>
+                    </a>
+                    {% else %}
+                    <a class="site-header__logo-link" href="/" itemprop="url">{{ shop.name }}</a>
+                    {% endif %} 
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-5 col-sm-6 col-xs-12 midle-content">
+                  {% include'header-search'%}
+                </div>								
+                <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12 right-content">
+                  <ul class="header-control">
+                    {% if section.settings.header_use_contact_home1 %}
+                    <li class="hotline">
+                      <div class="icon">
+                        <i class="fa fa-phone" aria-hidden="true"></i>
+                      </div>
+                      <div class="content">
+                        <span class="text">{{section.settings.header_phone_title_home1}}</span>
+                        <span class="number">{{section.settings.header_phone_contact_home1}}</span>
+                      </div>
+                    </li>
+                    {% endif %}
+                    <li class="box-minicart">
+                      {% include'header-cart'%}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="this-sticky">
+            <div class="container">
+              <div class="header-nav-wapper main-menu-wapper">
+                <div class="row">
+                  {% if section.settings.use_category_menu %}
+                      <div class="col-lg-3 col-md-4 col-sm-12">                    
+                        {% include 'category-menu'%}
+                      </div>
+                      <div class="col-lg-9 col-md-8 col-sm-12">                      
+                        {%- render 'menu',se_blocks:se_blocks,tp_blocks:tp_blocks -%}    
+                      </div>
+                  {% else %}
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        {%- render 'menu',se_blocks:se_blocks,tp_blocks:tp_blocks -%} 
+                    </div>              
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+{% endunless %}

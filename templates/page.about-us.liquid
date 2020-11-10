@@ -1,0 +1,163 @@
+<!-- Created by Andy 03/08/2017 -->
+
+<div class="main-content shop-page about-page">
+  <div class="container">
+    
+    {% include 'breadcrumb'%}
+    
+    <div class="row about-info content-form">
+      <div class="col-xs-12 col-sm-5 col-md-6">
+        <img src="{{settings.about_content_image}}" alt="">
+      </div>
+      <div class="col-xs-12 col-sm-7 col-md-6">
+        <div class="info">
+          <h3 class="main-title">{{settings.about_title_block}}</h3>
+          <p class="des">{{settings.about_content_detail}}</p>    
+          <p class="des">{{settings.about_content_detail_2}} </p>
+        </div>
+      </div>
+    </div>
+    {% if settings.use_our_team%}
+    <div class="about-content">
+      <h4 class="title">{{settings.about_team_title}}</h4>
+      <p class="des">{{settings.about_team_description}}</p>
+      <div class="owl-carousel" data-autoplay="false" data-nav="false" data-dots="false" data-loop="false" data-slidespeed="800" data-margin="30"  data-responsive = '{"0":{"items":2}, "640":{"items":3}, "768":{"items":3}, "1024":{"items":4}, "1200":{"items":4}}'>
+       
+            {% if settings.use_member_1 %}
+              <div class="character">
+                <div class="avata">
+                  <img src="{{settings.about_team_photo1}}" alt="">
+                </div>
+                <div class="info">
+                  <h4 class="position">{{settings.about_team_desc1}}</h4>
+                  <h5 class="name">{{settings.about_team_name1}}</h5>
+                </div>
+              </div>    
+            {% endif %}
+
+            {% if settings.use_member_2 %}
+            <div class="character">
+              <div class="avata">
+                <img src="{{settings.about_team_photo2}}" alt="">
+              </div>
+              <div class="info">
+                <h4 class="position">{{settings.about_team_desc2}}</h4>
+                <h5 class="name">{{settings.about_team_name2}}</h5>
+              </div>
+            </div>    
+            {% endif %}
+
+            {% if settings.use_member_3 %}
+            <div class="character">
+              <div class="avata">
+                <img src="{{settings.about_team_photo3}}" alt="">
+              </div>
+              <div class="info">
+                <h4 class="position">{{settings.about_team_desc3}}</h4>
+                <h5 class="name">{{settings.about_team_name3}}</h5>
+              </div>
+            </div>    
+            {% endif %}
+
+            {% if settings.use_member_4 %}
+            <div class="character">
+              <div class="avata">
+                <img src="{{settings.about_team_photo4}}" alt="">
+              </div>
+              <div class="info">
+                <h4 class="position">{{settings.about_team_desc4}}</h4>
+                <h5 class="name">{{settings.about_team_name4}}</h5>
+              </div>
+            </div>    
+            {% endif %}
+
+            {% if settings.use_member_5 %}
+            <div class="character">
+              <div class="avata">
+                <img src="{{settings.about_team_photo5}}" alt="">
+              </div>
+              <div class="info">
+                <h4 class="position">{{settings.about_team_desc5}}</h4>
+                <h5 class="name">{{settings.about_team_name5}}</h5>
+              </div>
+            </div>    
+            {% endif %}	
+        
+      </div>
+    </div>
+    {% endif %}
+    
+    
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8">
+        <div class="row auto-clear">
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="answer-question">
+              <h4 class="question">{{settings.about_infor_title_1}}</h4>
+              <p class="answer">{{settings.about_infor_desc_1}}</p>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="answer-question">
+              <h4 class="question">{{settings.about_infor_title_2}}</h4>
+              <p class="answer">{{settings.about_infor_desc_2}}</p>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="answer-question">
+              <h4 class="question">{{settings.about_infor_title_3}}</h4>
+              <p class="answer">{{settings.about_infor_desc_3}}</p>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+            <div class="answer-question">
+              <h4 class="question">{{settings.about_infor_title_4}}</h4>
+              <p class="answer">{{settings.about_infor_desc_4}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
+        <h4 class="question">{{settings.about_service_block_title}}</h4>
+        <ul class="group-changed parent-content">
+          <li class="changed-item">
+            <a href="#" class="changed-button active"></a>
+            <div class="info">
+              <h5 class="title">{{settings.about_service_title_1}}</h5>
+              <p class="des-changed show-content">
+                {{settings.about_service_content_1}}
+              </p>
+            </div>
+          </li>
+          <li class="changed-item">
+            <a href="#" class="changed-button"></a>
+            <div class="info">
+              <h5 class="title">{{settings.about_service_title_2}}</h5>
+              <p class="des-changed">
+                {{settings.about_service_content_2}}
+              </p>
+            </div>
+          </li>
+          <li class="changed-item">
+            <a href="#" class="changed-button"></a>
+            <div class="info">
+              <h5 class="title">{{settings.about_service_title_3}}</h5>
+              <p class="des-changed">
+                {{settings.about_service_content_3}}
+              </p>
+            </div>
+          </li>
+          <li class="changed-item">
+            <a href="#" class="changed-button"></a>
+            <div class="info">
+              <h5 class="title">{{settings.about_service_title_4}}</h5>
+              <p class="des-changed">
+                {{settings.about_service_content_4}}
+              </p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div> 
+</div>

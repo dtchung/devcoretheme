@@ -1,0 +1,316 @@
+
+
+<script>
+var json_collection_filter =  {{collection.products | json }};
+  var json_wishlist = [];
+  var json_product_tag = [];
+  var json_email = [];
+  {% if customer %}
+  
+    {% capture tags %}{% for tag in customer.tags %}{{ tag }} {% endfor %}{% endcapture %}
+    {% assign tags = tags | remove:'x' | split:' ' | uniq | join:' ' %}
+    {% for product in collection.products %}
+        		
+        {% if tags contains product.id %}
+          	{% for tag in customer.tags %}
+              {% if tag contains product.id %}
+                  {% assign t = tag %}  				
+
+              {% endif %}
+          	{% endfor %}
+  			json_product_tag.push("{{t}}");			
+  
+        	{% assign check = t.size | minus:product.id.size | modulo:2 %}
+        	{% assign  check_mod =  t.size | modulo :2   %}
+        	{% if check == 0 or check_mod == 0  %}
+			 	json_wishlist.push({{t | remove: 'x'}});
+			{% endif %} 
+  		{% else %}
+  			json_product_tag.push("{{product.id}}");
+  		{% endif %}
+    {% endfor %} 
+  		json_email.push("{{customer.email}}");
+  {% endif %}
+   
+  var pages="search";
+</script>
+
+<!-- Created by Andy 21/06/2017 -->
+<div class="kt-page-heading" >
+  <div class="container">
+    <div class="wapper breadcrumbs">
+      <div class="inner">
+        <nav class="kt-breadcrumb"><a href="/">Home</a> \ {{template}}</nav>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{% assign type="" %}
+
+{% for item in search.results %}
+    {% if item.object_type == 'article' %}
+        {% assign type="article" %}
+        {% break %}
+    {% elsif item.object_type == 'page' %}
+        <!--
+        'item' is a page.
+        All page object properties can be accessed.
+        -->
+        {% assign type="page" %}
+        {% break %}
+    {% elsif item.object_type == 'product' %}
+        <!--
+        'item' is a product.
+        All product object properties can be accessed.
+        -->
+        {% assign type="product" %}
+        {% break %}
+	{% else %}
+		{% assign type="" %}
+		{% break %}
+    {% endif %}
+{% endfor %}
+
+
+{% if type == "product" %}
+  
+  <div class="main-container shop-page left-slidebar">
+    {% if search.results_count == 0 or search.performed == false %}
+    	<div class="container empty-page-content text-center">
+      	<h1 class="h2">{{ 'general.search.title' | t }}</h1>
+    {% else %}
+      	<div class="container section-header text-center">
+        <h1 class="h2">{{ 'general.search.results_with_count' | t: terms: search.terms, count: search.results_count }}</h1>
+    {% endif %}
+
+        {% if search.performed and search.results_count == 0 %}
+        	<hr class="hr--small hr--invisible">
+        	<p>{{ 'general.search.no_results_html' | t: terms: search.terms }}</p>
+        {% endif %}
+      </div>
+    </div>
+    {% if search.performed %}
+      {% if search.results_count > 0 %}
+        <hr class="container">
+      {% endif %}
+
+
+        <div class="container" style="margin-bottom:32px;">
+          <div class="row">
+
+            {% paginate search.results by 10 %}
+            <div class="main-content col-sm-12 col-md-12 grid-style" id="primary">        
+
+              <ul class="products auto-clear clear-both" id="collection-product">
+                {% for product in search.results %}
+
+                    {% assign on_sale = false %}
+                    {% assign sale_text = 'products.product.on_sale' | t %}
+                    {% if product.compare_at_price > product.price %}
+                      {% assign on_sale = true %}
+                    {% endif %}
+
+                    {% assign sold_out = true %}
+                    {% assign sold_out_text = 'products.product.sold_out' | t %}
+                    {% if product.available %}
+                      {% assign sold_out = false %}
+                    {% endif %}
+
+
+                    <div class="product-item layout1 col-ts-12 col-xs-6 col-sm-6 col-md-3 col-lg-3 no-padding">
+                      <div class="product-inner equal-elem">
+                        <ul class="group-flash">
+
+                          {% assign date_published = product.published_at | date:'%Y%m%d' %}
+                          {% assign date_now = 'now' | date:'%Y%m%d' %}
+                          {% assign date_difference = date_now | minus: date_published %}
+                          {% assign limit_day = settings.product_page_new_product | plus: 0%}
+                          {% if date_difference <  limit_day%}
+                              <li><span class="new flash">{{settings.collection_page_new_title}}</span></li>       	   
+                          {% endif %}      
+                          {% if on_sale == true %}
+                            <li><span class="sale flash">{{settings.collection_page_sale_title}}</span></li>
+                            <li><span class="best flash">{{settings.collection_page_sale_desc}}</span></li>
+                          {% endif %}
+
+                        </ul>
+                        <div class="thumb">
+                          <a href="{{ product.url | within: collection }}" data-pid="{{ product.variants.first.id }}" class="quickview-button quick-view"><span class="icon"><i class="fa fa-eye" aria-hidden="true"></i></span> {{settings.collection_page_quickview}}</a>
+                          <a href="{{ product.url | within: collection }}" class="thumb-link"><img src="{{ product.featured_image.src | img_url: 'grande' }}" alt=""></a>
+                        </div>
+                        <div class="info"> 
+                          <!-- Rate code -->
+                          <div class="star-rating">
+                            <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+                          </div>
+                          <!-- End rate-->
+                          <a href="{{ product.url | within: collection }}" class="product-name">{{ product.title }}</a>
+
+                          <div class="price">        
+                            {% if on_sale %}
+                                <span class="del">{{product.compare_at_price | money }}</span>
+                                <span class="ins">{{product.variants[0].price | money }}</span>      
+                            {% else %}
+                                <span>{{product.variants[0].price | money }}</span>
+                            {% endif %}
+
+                          </div>
+                          <div class="availability">{{settings.collection_page_availability}}: <a href="#">{% if product.available %} {{settings.collection_page_instock}} {% else %} {{'products.product.unavailable' | t}}{% endif %}</a></div>
+                        </div>
+
+                        {% if sold_out == false %}          
+                              <div class="group-button">
+                                <div class="inner">
+                                  {% if product.variants.size > 1 %}
+                                    <a class="button select-option" onclick="location.href='{{ product.url | within: collection }}'">{{'Product option' | upcase }}</a>
+                                  {% else %}
+                                    {% if product.variants.first.available %}
+                                        <a href="#" class="add-to-cart add_to_cart_button" data-pid="{{ product.variants.first.id }}" title="{{'products.product.add_to_cart' | t}}"><span class="text">{{'products.product.add_to_cart' | t | upcase }}</span><span class="icon"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></span></a>
+                                        {% assign button = "" %}
+                                        {% include 'wishlist-product' %}
+                                        <a href="#" class="compare compare-button" data-pid="{{product.handle}}" title="{{ 'Compare product' }}"><span class="icon"><i class="fa fa-exchange" aria-hidden="true"></i></span><span class="text">{{settings.collection_page_add_to_compare}}</span></a>
+                                    {% endif %}
+                                  {% endif %}              
+                                </div>
+                              </div>
+                          {% else %}
+                              <div class="group-button" style="text-align: center;">
+                                <a class="button btn-sold-out" onclick="location.href='{{ product.url | within: collection }}'">{{'products.product.sold_out' | t | upcase }}</a>
+                              </div>
+                          {% endif %}
+
+                      </div>
+                    </div>
+                {% endfor %}
+              </ul>
+
+
+              {% if paginate.pages > 1 %}
+              <nav class="woocommerce-pagination pagation">      
+                {%comment%}{{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}{%endcomment%}
+                <ul class="page-numbers">
+
+                  {% if paginate.previous.is_link %}
+                  <li> <a class="prev page-numbers" href="{{ paginate.previous.url }}#primary">{{ paginate.previous.title }}</a></li>           
+                  {% endif %}
+
+                  {% assign i=1 %}
+                  {% for i in (1..paginate.pages) %}
+                  {% if paginate.current_page == i %}
+                  <li><span class="page-numbers current">{{i}}</span></li>
+                  {% else %}
+                  {% assign index = i | plus:0 %}
+                  {% assign index = index | minus:1 %}
+                  {% if paginate.parts[index].is_link == true %}
+                  <li><a class="page-numbers" href="{{paginate.parts[index].url}}">{{paginate.parts[index].title}}</a></li>
+                  {% endif %}
+                  {%endif%}
+                  {% endfor %}
+
+                  {% if paginate.next.is_link %}
+                  <li> <a class="next page-numbers" href="{{ paginate.next.url }}#primary">{{ paginate.next.title }}</a></li>           
+                  {% endif %}
+                </ul>
+              </nav>
+              {% endif %}  
+            </div>
+            {% endpaginate %}  
+
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+{% elsif type == 'article' %}
+    {% if search.performed %}	
+        {% paginate search.results by settings.pagination_limit %} 
+
+        {% if search.results_count == 0 %}
+            <div class="container">
+              <h1 class="section-header__title h2">{{ 'general.search.no_results_html' | t: terms: search.terms }}</h1>
+            </div>
+        {% else %}
+            <div class="main-content shop-page main-content-blog">
+              <div class="container">                  
+                <div class="row">
+                  <div class="col-xs-12 col-sm-7 col-md-8 col-lg-9 content-offset">
+                    <div class="row auto-clear blog-grid">
+                      {% for item in search.results %} 
+                          <div class="post-item layout3 col-ts-12 col-xs-6 col-sm-12 col-md-6">
+                            <div class="post-format">
+                              <a href="{{ item.url }}"><img src="{{ item.image.src | img_url: '1024x1024' }}" alt="{{ item.title }}"></a>
+                            </div>
+                            <div class="post-info">
+                              <div class="head">
+                                <a href="{{ item.url }}" class="post-title">{{ item.title }}</a>
+                                <ul class="meta-post">
+                                  <li class="author">{{'blogs.article.by_author' | t: author : article.author}}</li>
+                                  <li class="time-post"><a href="{{ item.url }}"><span class="day">{{ item.created_at | date: "%d" }}</span> {{ item.created_at | date: "%b" }} {{ item.created_at | date: "%Y" }}</a></li>	
+                                </ul>
+                              </div>
+                              <div class="main-info-post">
+                                {% if article.excerpt.size > 0 %}
+                                {{ item.excerpt }}
+                                {% else %}
+                                <p class="des">{{ item.content | strip_html | truncate: 800 }}</p>
+                                {% endif %}      
+                                <a href="{{item.url}}" class="button read-more">{{'blogs.article.read_more'|t}}</a>
+                              </div>
+                            </div>
+                          </div>                             
+                      {% endfor %}
+                    </div>
+
+                    {% if paginate.pages > 1 %}
+                    <div class="row">     
+                      {%comment%}{{ paginate | default_pagination | replace: '&laquo; Previous', '&larr;' | replace: 'Next &raquo;', '&rarr;' }}{%endcomment%}
+                      <div class="pagination">
+                        <ul class="list-page">
+                          {% if paginate.previous.is_link %}
+                          <li><a href="{{ paginate.previous.url }}#primary" class="nav-button page-numbers"> {{ paginate.previous.title }}</a></li>
+                          {% endif %}
+
+                          {% assign i=1 %}
+                          {% for i in (1..paginate.pages) %}
+                          {% if paginate.current_page == i %}                        
+                          <li><a href="#" class="page-number current">{{i}}</a></li>
+                          {% else %}
+                          <li><a href="/blogs/{{blog.handle}}?page={{i}}#primary" class="page-number">{{i}}</a></li>
+                          {%endif%}
+                          {% endfor %}
+
+                          {% if paginate.next.is_link %}
+                          <li><a href="{{ paginate.next.url }}#primary" class="nav-button page-numbers">{{ paginate.next.title }}</a></li>
+                          {% endif %}
+                        </ul>
+                      </div>
+                    </div>
+                    {% endif %}            
+                  </div>          
+                  {% include 'blog-sidebar'%}  
+                </div>
+              </div>
+
+              <!-- Shortcode brand carousel -->
+              {% if settings.use_brand_product_shortcode %}
+              {% assign short = '[brand-carousel link1="' | append: settings.about_brand_slider1 | append:'" url1="' | append: settings.about_brand_slider1_url | append:'" link2="'| append: settings.about_brand_slider2 | append:'"  url2="' | append: settings.about_brand_slider2_url | append:'" link3="'| append:settings.about_brand_slider3 | append:'"  url3="' | append: settings.about_brand_slider3_url | append:'" link4="'|append:settings.about_brand_slider4 | append:'"  url4="' | append: settings.about_brand_slider4_url | append:'" link5="'|append:settings.about_brand_slider5 | append:'"  url5="' | append: settings.about_brand_slider5_url | append:'"  link6="' | append: settings.about_brand_slider6 | append:'"  url6="' | append: settings.about_brand_slider6_url | append:'" link7="'| append: settings.about_brand_slider7 | append:'"  url7="' | append: settings.about_brand_slider7_url | append:'" link8="'| append:settings.about_brand_slider8 | append:'"  url8="' | append: settings.about_brand_slider8_url | append:'" link9="'|append:settings.about_brand_slider9 | append:'"  url9="' | append: settings.about_brand_slider9_url | append:'" link10="'|append:settings.about_brand_slider10 | append:'"  url10="' | append: settings.about_brand_slider10_url | append:'" style="' | append:settings.about_brand_style | append:'"]' %}
+              {% include 'shortcode' load: short %}
+              {% endif %}
+              <!-- End Shortcode brand carousel -->
+
+            </div>
+
+        {% endif %}
+		{% endpaginate %}
+	 {% endif %}
+
+
+	{% elsif type == 'page' %}
+		
+	{% else %}
+        <div class="container">
+          <h1 class="section-header__title h2">{{ 'general.search.no_results_html' | t: terms: search.terms }}</h1>
+        </div>
+{% endif %}

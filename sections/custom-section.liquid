@@ -1,0 +1,473 @@
+{%- liquid
+	assign sid = section.id
+%}
+
+{%- for i in (1..1) -%} 
+  <div class="nt_se_{{sid}} {{section.settings.layout}}">   
+    <div class="row custom_section">
+    {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+               {%- when 'heading' -%}
+                    <div class="col-12">
+                      <div class="{% if block.settings.title != blank %} wrap_title {% endif %}">
+                        <h3 class="section-title"><span > {{block.settings.title}}</span></h3>        
+                        <span class="section-subtitle">{{block.settings.sub_title}}</span>
+                      </div> 
+      			    </div>
+               {%- when 'image' -%}{%- assign image = block.settings.image -%}
+                  <div class="col-lg-{{block.settings.cl}} col-md-{{block.settings.cl_tb}} col-{{block.settings.cl_mb}}">
+                    <div class="img_custom_section">
+                      {%- if image != blank -%} 
+                      {%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}                        
+                      <div class="nt_bg_lz lazyload pr_lazy_img" data-bgset="{{ image | img_url: '1x1' }}" data-ratio="{{image.aspect_ratio}}" data-sizes="auto" data-parent-fit="cover" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 100}}%"></div>
+                      {%- else -%}
+                      <img class="nt_bg_lz lazyload pr_lazy_img" style="max-width:{{block.settings.wid |default:image.width}}px" data-src="https://placehold.it/480x520.png/{{cl}}/{{cl}}?text=480x520" alt="">
+                      {%- endif -%}
+                    </div>
+                   </div>
+                {%- when 'space' -%}
+                  <div id="b_{{block.id}}" class="slt4_space col-12" style="height:{{block.settings.sp}}px"></div>
+                {%- when 'html' -%}
+                  <div class="col-lg-{{block.settings.cl}} col-md-{{block.settings.cl_tb}} col-{{block.settings.cl_mb}}"><div id="b_{{block.id}}" class="slt4_html">{{block.settings.html}}</div></div>
+                {%- else -%}
+                  <div class="col-lg-{{block.settings.cl}} col-md-{{block.settings.cl_tb}} col-{{block.settings.cl_mb}}"><div class=" about_us_txt">{{block.settings.text}}</div></div>
+            {%- endcase -%}
+          {%- endfor -%}
+       {%- else -%}
+       		<div class="tc">{%- render 'no_blocks'-%}</div>   
+       {%- endif -%}
+    </div>
+  </div>
+{%- endfor -%}
+{%- liquid
+  assign mg = section.settings.mg
+  assign pd = section.settings.pd
+  assign mg_mb = section.settings.mg_mb
+  assign pd_mb = section.settings.pd_mb
+  assign sid = section.id -%}
+
+{%- capture style -%}	
+	{%- if mg != blank or pd != blank -%} 
+      .nt_se_{{sid}} {
+         {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+             margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+             {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+         {%- endif -%}
+         {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+             padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+         {%- endif -%}
+      }
+	{%- endif -%}
+	{%- if mg_mb != blank or pd_mb != blank -%} 
+      @media only screen and (max-width: 767px) {
+          .nt_se_{{sid}} {
+             {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+                 margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+                 {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+             {%- endif -%}
+             {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+                 padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+             {%- endif -%}
+          }
+      }
+	{%- endif -%}
+{%- endcapture -%}
+
+{%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+
+
+{%- schema -%}
+  {
+    "name": "Custom section",   
+    "class": "nt_section type_custom_section",    
+    "settings": [     	  
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "options": [
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }  
+     
+    ],  
+    "blocks": [
+      {
+        "type": "heading",
+        "name": "Heading",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "text","id": "title","label": "Heading","default":"Custom title"
+          },
+          {
+            "type": "textarea","id": "sub_title","label": "Sub Text","default":"wellcome to shopify theme"
+          }   
+        ]
+      },
+      {
+        "type": "image",
+        "name": "Image",
+        "settings": [
+         {
+          "type":"image_picker","id":"image","label":"Image"
+          },
+          {
+            "type": "text","id": "wid","label": "Max width:","info": "integer, eg: 500"
+          },
+         {
+           "type": "select",
+           "id": "cl",
+           "label": "Container width",
+           "default": "6",
+           "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "10",
+              "label": "83.33%"
+            },
+            {
+              "value": "8",
+              "label": "66%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            },
+            {
+              "value": "4",
+              "label": "33%"
+            },
+            {
+              "value": "3",
+              "label": "25%"
+            },
+            {
+              "value": "15",
+              "label": "20%"
+            },
+            {
+              "value": "2",
+              "label": "16.66%"
+            }
+           ]
+         },
+          {
+            "type": "select",
+            "id": "cl_tb",
+            "label": "Container width tablet",
+            "default": "6",
+            "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "10",
+              "label": "83.33%"
+            },
+            {
+              "value": "8",
+              "label": "66%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            },
+            {
+              "value": "4",
+              "label": "33%"
+            },
+            {
+              "value": "3",
+              "label": "25%"
+            }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "cl_mb",
+            "label": "Container width mobile",
+            "default": "12",
+            "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "name": "Content",
+        "settings": [
+         {
+          "type":"richtext","id":"text","label":"Content","default":"<p>Use this text to share information about your brand with your customers. Describe a product, share announcements, or welcome customers to your store.</p>"
+          },
+         {
+           "type": "select",
+           "id": "cl",
+           "label": "Container width",
+           "default": "6",
+           "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "10",
+              "label": "83.33%"
+            },
+            {
+              "value": "8",
+              "label": "66%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            },
+            {
+              "value": "4",
+              "label": "33%"
+            },
+            {
+              "value": "3",
+              "label": "25%"
+            },
+            {
+              "value": "15",
+              "label": "20%"
+            },
+            {
+              "value": "2",
+              "label": "16.66%"
+            }
+           ]
+         },
+          {
+            "type": "select",
+            "id": "cl_tb",
+            "label": "Container width tablet",
+            "default": "6",
+            "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "10",
+              "label": "83.33%"
+            },
+            {
+              "value": "8",
+              "label": "66%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            },
+            {
+              "value": "4",
+              "label": "33%"
+            },
+            {
+              "value": "3",
+              "label": "25%"
+            }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "cl_mb",
+            "label": "Container width mobile",
+            "default": "12",
+            "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "html",
+        "name": "HTML",
+        "settings": [
+            {
+              "type": "html",
+              "id": "html",
+              "label": "Custom HTMl",
+              "default": "<h3>Best shopify theme 2020<\/h3>"
+            },
+         {
+           "type": "select",
+           "id": "cl",
+           "label": "Container width",
+           "default": "6",
+           "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "10",
+              "label": "83.33%"
+            },
+            {
+              "value": "8",
+              "label": "66%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            },
+            {
+              "value": "4",
+              "label": "33%"
+            },
+            {
+              "value": "3",
+              "label": "25%"
+            },
+            {
+              "value": "15",
+              "label": "20%"
+            },
+            {
+              "value": "2",
+              "label": "16.66%"
+            }
+           ]
+         },
+          {
+            "type": "select",
+            "id": "cl_tb",
+            "label": "Container width tablet",
+            "default": "6",
+            "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "10",
+              "label": "83.33%"
+            },
+            {
+              "value": "8",
+              "label": "66%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            },
+            {
+              "value": "4",
+              "label": "33%"
+            },
+            {
+              "value": "3",
+              "label": "25%"
+            }
+            ]
+          },
+          {
+            "type": "select",
+            "id": "cl_mb",
+            "label": "Container width mobile",
+            "default": "12",
+            "options": [
+            {
+              "value": "12",
+              "label": "100%"
+            },
+            {
+              "value": "6",
+              "label": "50%"
+            }
+            ]
+          }
+          ]
+      },
+      {
+        "type": "space",
+        "name": "Space between",
+        "settings": [
+            {
+              "type": "range",
+              "id": "sp",
+              "min": 5,
+              "max": 105,
+              "step": 1,
+              "label": "Space",
+              "unit": "px",
+              "default": 30
+            }
+          ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "7. Custom section",
+        "category": "Text",
+        "blocks": [{"type": "heading"},{"type": "image"},{"type": "text"}]
+      }
+    ]
+  }
+{% endschema %}

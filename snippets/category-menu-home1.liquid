@@ -1,0 +1,68 @@
+<div class="vertical-wapper parent-content">
+  <div class="block-title show-content">
+    <span class="icon-bar">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+    <span class="text">{{settings.category_menu_title}}</span>
+  </div>
+  <div class="vertical-content hidden-content {% if settings.show_content_category%}show-up {% endif %}" >
+    {% if linklists.category-menu.links.size > 0 %}
+            <ul class="vertical-menu">
+              {% for link in linklists.category-menu.links %}
+              		{% assign param  = link.title |  split: '[' | last  | split: ']' | first | remove:" "|  strip_html %}
+              	    {% assign child_list_handle = link.handle | remove:" "|  strip_html%}
+              		{% assign element1  = param | split:'/' | first %}
+              		{% assign element2  = param | split:'/' | last %}
+              
+              		{% if linklists[child_list_handle].links.size > 0%}
+              			
+                        <li class="menu-item-has-children has-megamenu">
+                          <a href="{{ link.url }}">
+                            {% if link.title contains '['%}                  	
+                                {{ link.title |  split: '[' | first }}
+                            {%else %}
+                                {{ link.title }}
+                            {% endif %}
+                          </a>
+                          <a href="{{ link.url }}" class="toggle-submenu"></a>
+                          <div class="submenu submenu2 mega-menu" style="background-image:url({{element2 | asset_url}})">
+                            <div class="row">
+                              {% for child_link in linklists[child_list_handle].links %}
+                              	  {% assign grand_child_list_handle = child_link.handle | remove:" "|  strip_html %}
+                                  <div class="widget-custom-menu col-xs-12 col-sm-12 col-md-4 col-lg-4">
+                                    <h5 class="title widgettitle">{{child_link.title}}</h5>
+                                    {% if linklists[grand_child_list_handle].links.size > 0 %}
+                                        <ul>
+                                           {% for child_third_link in linklists[grand_child_list_handle].links %}
+                                              {% assign final_child_list_handle = child_third_link.handle | remove:" "|  strip_html %}                            
+                                              <li><a href="{{child_third_link.url}}">{{child_third_link.title}}</a></li>                                          
+                                           {% endfor %}
+                                        </ul>
+                                    {% endif %}
+                                  </div>
+                              {% endfor %}   
+                            </div>                            
+                          </div>
+                        </li>
+              		{% else %}
+              		    <li>
+                          <a href="{{ link.url }}">                            
+                            {% if link.title contains '['%}                  	
+                                {{ link.title |  split: '[' | first }}
+                            {%else %}
+                                {{ link.title }}
+                            {% endif %}
+                          </a>
+              			</li>
+              		{% endif %}
+                  
+              {% endfor %}
+            </ul>       
+   
+    {% else %}
+    	<p style="text-align: justify; padding:0 10px;">Please <b class="note">{{ 'create a link list' | link_to: '/admin/links' }} </b> that contains links to all the category you wish to Category Menu on this page. The title of that link list must be <strong>Category menu</strong>. If you want your collections to be listed alphabetically, reorder them alphabetically on your <b class="note"> {{ 'Navigation page' | link_to: '/admin/links' }}</b>.</p>
+    {% endif %} 
+  </div>
+</div>

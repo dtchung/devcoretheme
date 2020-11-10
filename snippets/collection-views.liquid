@@ -1,0 +1,11 @@
+{% comment %}
+  Toggle between collection.liquid and collection.list.liquid with the
+  ?view= parameter.
+{% endcomment %}
+
+<div class="control-button" title="View of item">
+  <a href="javascript:void(0)" data-col="3" class="grid-button-3 js_cat_view {% if view_mod == 'grid' %}active {% endif %}"><span class="icon"><i class="las la-th" aria-hidden="true"></i> </span></a>
+  <a href="javascript:void(0)" data-col="4" class="grid-button-4 js_cat_view " ><span class="icon"><i class="las la-grip-horizontal" aria-hidden="true"></i> </span></a>
+  <a href="javascript:void(0)" data-col="6" class="grid-button js_cat_view "><span class="icon"><i class="las la-th-large" aria-hidden="true"></i> </span></a>
+  <a href="javascript:void(0)" data-col="0" class="list-button js_cat_view {% if view_mod == 'list' %}active {% endif %}"><span class="icon"><i class="las la-th-list" aria-hidden="true"></i></span> </a>
+</div>

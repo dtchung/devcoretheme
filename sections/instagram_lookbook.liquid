@@ -1,0 +1,488 @@
+{%- liquid
+  assign sid = section.id
+  assign col = section.settings.col_pr
+  assign col_tb = section.settings.col_pr_tb
+  assign col_mb = ' pr_animated done' | prepend:section.settings.col_pr_mb
+  assign section_blocks = section.blocks
+  assign arr_img = section_blocks | where: "type", "img"
+  assign open_link = section.settings.open_link
+  assign sett_equal = section.settings.use_eq_height
+  assign layout_des = section.settings.layout_des
+  assign slider_to_show = section.settings.slider_to_show
+  assign arr_img = section_blocks | where: "type", "img" -%}
+
+{%- for i in (1..1) -%}
+  {%- if section.settings.cp_code and request.page_type == 'index' %}<div class="dn tc mt__40 mb__40 cp_cd_js"><input type="text" class="dcp_cd_ip" value='<div class="inc_lz inc_ins_laz" data-include="/search/?section_id={{sid}}"><div class="lds_bginfinity pr"></div></div>'><button class="dcp_cd_btn">Copy Shortcode</button></div>{% endif -%}
+  {%- if section.settings.hidden and request.page_type == 'index' %}{% break %}{% endif -%}
+
+  <div class="nt_se_{{sid}} {{section.settings.layout}}">
+    <div class="wrap_title">
+        <h3 class="section-title"><span > {{section.settings.title}}</span></h3>        
+        <span class="section-subtitle">{{section.settings.sub_title}}</span>
+      </div> 
+    <div {% if layout_des == '2' %} data-slide-to-show="{{slider_to_show}}" {% endif %} class="instagram_lookbook {% if layout_des == '2' %}js_instagram_lookbook {% endif %}row ins_spaces_{{section.settings.space}} {{section.settings.image_ratio}} {% if sett_equal %} equal_nt{% endif %}">
+      {%- if arr_img.size > 0 -%}{% assign offset = 0 -%}
+        {%- for bl in arr_img -%}{% assign check = true %}{% assign index = 0 %}{% assign offset = offset | plus:1 -%}
+          {%- assign image = bl.settings.image %}{% assign ratio = image.aspect_ratio |default:1.0 %}{% assign url = bl.settings.url -%}
+          <div id="pin_{{bl.id}}" class="pin__wr_js item_ins col-lg-{{col}} col-md-{{col_tb}} col-sm-{{col_mb}} col-xs-12" {{ bl.shopify_attributes }}>
+
+            {%- for block in section_blocks offset:offset -%}
+              {%- if block.type == 'img' %}{% break %}{% endif -%}{% assign offset = offset | plus:1 -%}
+              {%- if block.type  == 'pin' -%}
+                {%- if block.settings.product == blank %}{% continue %}{% endif -%}{% assign check = false -%}{% assign index = index | plus:1 -%}{% assign b_id = block.id -%}
+                <a id="pin_{{b_id}}" data-i='{{bl.id}}' data-id='{{b_id}}' href="/products/{{block.settings.product}}" rel="nofollow" class="js_add_qv js_quick_view hotspot_ins hotspot_{{b_id}} {{block.settings.cl_pin}}" style="transform: translate(-{{block.settings.pos_l}}%, -{{block.settings.pos_t}}%);top:{{block.settings.pos_t}}%;left:{{block.settings.pos_l}}%" {{ block.shopify_attributes }}><span>{{index}}</span></a>
+              {%- endif -%}
+            {%- endfor -%}
+
+            {%- if url != blank -%}
+              <a data-no-instant rel="nofollow" class="wrap_ins_img" href="{{url}}" target="{{open_link}}">
+                <div class="lazyload nt_bg_lz pr_lazy_img" data-bgset="{% if image != blank %}{{ image | img_url: '1x1' }}{% else %}https://placehold.it/1080x1080.png{% endif %}" data-ratio="{{ratio}}" data-sizes="auto"></div>
+                {%- if check %}<div class="info pa tc flex ts__03 fl_center al_center op__0 t__0 l__0 r__0 b__0 h__100 pe_none"><span class="pr cw mr__5 ml__5"><i class="facl facl-instagram"></i></span></div>{%- endif -%}
+              </a>
+            {%- else -%}
+              <div class="wrap_ins_img"><div class="lazyload nt_bg_lz pr_lazy_img" data-bgset="{% if image != blank %}{{ image | img_url: '1x1' }}{% else %}https://placehold.it/1080x1080.png{% endif %}" data-ratio="{{ratio}}" data-sizes="auto"></div></div>
+            {%- endif -%}
+            
+          </div>
+        {%- endfor -%}
+      {%- else -%}
+        <div class="placeholder-noblocks tc">{{ 'homepage.onboarding.no_content' | t }}</div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endfor -%}
+
+{%- liquid
+    assign mg = section.settings.mg
+    assign pd = section.settings.pd
+    assign mg_mb = section.settings.mg_mb
+    assign pd_mb = section.settings.pd_mb
+    assign sid = section.id -%}
+
+    {%- capture style -%}
+    {%- if section.settings.cl_bg != blank -%}#shopify-section-{{sid}} {background-color: {{section.settings.cl_bg}} !important;}{%- endif -%}
+    {%- if mg != blank or pd != blank -%} 
+    .nt_se_{{sid}} {
+    max-width:100%;
+    {%- if mg != blank %}{% assign arr_mg = mg | remove:' ' | split:',' -%}
+    margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+    {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+    {%- endif -%}
+    {%- if pd != blank %}{% assign arr_pd = pd | remove:' ' | split:',' -%}
+    padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+    {%- endif -%}
+    }
+    {%- endif -%}
+    {%- if mg_mb != blank or pd_mb != blank -%} 
+    @media only screen and (max-width: 767px) {
+    .nt_se_{{sid}} {
+    {%- if mg_mb != blank %}{% assign arr_mg = mg_mb | remove:' ' | split:',' -%}
+    margin-top: {{arr_mg[0]}} !important;margin-right: {{arr_mg[1]}} !important;margin-bottom: {{arr_mg[2]}} !important;margin-left: {{arr_mg[3]}} !important;
+    {%- if arr_mg[3] != blank and section.settings.layout == 'nt_full' -%}width: calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});width: -webkit-calc(100% - {{arr_mg[3]}} - {{arr_mg[1]}});{%- endif -%}
+    {%- endif -%}
+    {%- if pd_mb != blank %}{% assign arr_pd = pd_mb | remove:' ' | split:',' -%}
+    padding-top: {{arr_pd[0]}} !important;padding-right: {{arr_pd[1]}} !important;padding-bottom: {{arr_pd[2]}} !important;padding-left: {{arr_pd[3]}} !important;
+    {%- endif -%}
+    }
+    }
+    {%- endif -%}
+    {%- endcapture -%}
+
+    {%- style -%}{{ style | strip_newlines | remove:"  "}}{%- endstyle -%}
+{%- unless sett_equal %}{% style -%}
+  {%- for bl in arr_img -%}{% assign image = bl.settings.image %}{% assign ratio = image.aspect_ratio |default:1.0 -%}
+       #pin_{{bl.id}} .pr_lazy_img{padding-top:{{ 1 | divided_by: ratio | times: 100}}%;}
+  {%- endfor -%}
+{%- endstyle %}{% endunless -%}
+
+{%- schema -%}
+  {
+    "name": "Instagram lookbook",
+    "class": "nt_section type_instagram_shop type_pin_owl",
+    "max_blocks": 60,
+    "settings": [
+      {
+        "type": "header",
+        "content": "== Title Settings"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading",
+        "default": "Instagram shop"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_title",
+        "label": "Sub Text"
+      },  
+      {
+        "type": "header",
+        "content": "== General Settings"
+      },
+      {
+        "type": "select",
+        "id": "layout_des",
+        "options": [
+          {
+            "value": "1",
+            "label": "Grid"
+          },
+          {
+            "value": "2",
+            "label": "Slider"
+          }
+        ],
+        "label": "Layout design",
+        "default": "2"
+      },
+      {
+        "type": "select",
+        "id": "open_link",
+        "options": [
+          {
+            "value": "_self",
+            "label": "Current window (_self)"
+          },
+         {
+            "value": "_blank",
+            "label": "New window (_blank)"
+          }
+        ],
+        "label": "Open link in",
+        "default": "_self"
+      },
+      {
+       "type": "select",
+       "id": "space",
+       "options": [
+         {
+           "value": "15",
+           "label": "15"
+         },
+         {
+           "value": "10",
+           "label": "10"
+         },
+         {
+           "value": "6",
+           "label": "6"
+         },
+         {
+           "value": "3",
+           "label": "3"
+         },
+         {
+           "value": "2",
+           "label": "2"
+         },
+         {
+           "value": "0",
+           "label": "0"
+         }
+       ],
+       "label": "spaces between photos",
+       "default": "0" 
+      },      
+      {
+        "type": "select",
+        "id": "col_pr",
+        "label": "Photos per row",
+        "info": "How many photos you want to show per row (Layout design is grid)",
+        "default": "2",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          },
+          {
+            "value": "15",
+            "label": "5"
+          },
+          {
+            "value": "2",
+            "label": "6"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr_tb",
+        "label": "Photos per row Tablet (Layout design is grid)",
+        "default": "6",
+        "options": [
+          {
+            "value": "6",
+            "label": "2"
+          },
+          {
+            "value": "4",
+            "label": "3"
+          },
+          {
+            "value": "3",
+            "label": "4"
+          }
+        ]
+      },
+      {
+        "type": "select",
+        "id": "col_pr_mb",
+        "label": "Photos per row Mobile (Layout design is grid)",
+        "default": "6",
+        "options": [
+          {
+            "value": "12",
+            "label": "1"
+          },
+          {
+            "value": "6",
+            "label": "2"
+          }
+        ]
+      },   
+      {
+        "type": "header",
+        "content": "== Slider Settings"
+      },      
+      {
+        "type": "select",
+        "id": "slider_to_show",
+        "label": "Slide to show",
+        "info": "How many photos you want to show? (Note: you need to select 'Layout design' is slider)",
+        "default": "4",
+        "options": [
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "1",
+            "label": "1"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "== Design Image"
+      },
+      {
+        "type": "checkbox",
+        "id": "use_eq_height",
+        "label": "Use equal height images?",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "image_ratio",
+        "label": "Aspect Ratio",
+        "default": "ratio1_1",
+        "info": "Aspect Ratio Custom will settings in General panel.",
+        "options": [
+          {
+            "group": "Landscape",
+            "value": "ratio2_1",
+            "label": "2:1"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio16_9",
+            "label": "16:9"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio8_5",
+            "label": "8:5"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio3_2",
+            "label": "3:2"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio4_3",
+            "label": "4:3"
+          },
+          {
+            "group": "Landscape",
+            "value": "ratio_nt",
+            "label": "Ratio ASOS"
+          },
+          {
+            "group": "Squared",
+            "value": "ratio1_1",
+            "label": "1:1"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio2_3",
+            "label": "2:3"
+          },
+          {
+            "group": "Portrait",
+            "value": "ratio1_2",
+            "label": "1:2"
+          }
+        ]
+      },          
+      {
+        "type": "header",
+        "content": "== Design Options"
+      },
+      {
+        "type": "checkbox",
+        "id": "hidden",
+        "label": "Hidden Section?",
+        "default": false,
+        "info": "Hidden section on home page, but still visible on blog posts, product page, pages as shortcode."
+      },
+      {
+        "type": "checkbox",
+        "id": "cp_code",
+        "label": "Show copy shortcode?",
+        "default": false,
+        "info": "Copy shortcode only show on admin editor."
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "default": "nt_full",
+        "options": [
+         {
+            "value": "container",
+            "label": "Container"
+         },
+         {
+            "value": "nt_full",
+            "label": "Full Width"
+          }
+        ],
+        "label": "Layout"
+      },
+      {
+        "type": "color",
+        "id": "cl_bg",
+        "label": "Background color",
+        "default": "#fff"
+      },
+      {
+        "type": "text",
+        "id": "mg",
+        "label": "Margin",
+        "info":"Margin top, margin right, margin bottom, margin left. If you not use to blank",
+        "default": "30px,,30px,",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd",
+        "label": "Padding",
+        "info":"Padding top, padding right, padding bottom, padding left. If you not use to blank",
+        "placeholder": "30px,,30px,"
+      },
+     {
+        "type": "header",
+        "content": "== Design Mobile Options"
+      },
+      {
+        "type": "text",
+        "id": "mg_mb",
+        "label": "Margin",
+        "placeholder": "30px,,30px,"
+      },
+      {
+        "type": "text",
+        "id": "pd_mb",
+        "label": "Padding",
+        "placeholder": "30px,,30px,"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "img",
+        "name": "== Image Parent",
+        "limit": 12,
+        "settings": [
+          {
+            "type": "image_picker","id": "image","label": "Choose image","info": "1080 x 1080px .jpg recommended"
+          },
+          {
+            "type": "url","id": "url","label": "Link (optional)"
+          }
+        ]
+      },
+      {
+        "type": "pin",
+        "name": "Pin",
+        "settings": [
+          {
+            "type": "header","content": "== Pin Settings"
+          },
+          {
+            "type":"range","id":"pos_t","min":0,"max":100,"step":1,"unit":"%","label":"Position Top","default":50
+          },
+          {
+            "type":"range","id":"pos_l","min":0,"max":100,"step":1,"unit":"%","label":"Position Left","default":50
+          },
+          {
+           "type": "select","id": "cl_pin","label": "Pin Color:","default": "primary",
+           "options": [
+              { "value": "dark", "label": "Dark"},
+              { "value": "light", "label": "Light"},
+		      { "value": "primary", "label": "Primary"}
+           ]
+          },
+          {
+            "type": "header","content": "== Product Settings"
+          },
+          {
+             "type": "product","id": "product","label": "Choose product"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "1. Instagram shop",
+        "category": "Social media",
+        "blocks": [
+          {
+            "type": "img"
+          },
+          {
+            "type": "img"
+          },
+          {
+            "type": "img"
+          },
+          {
+            "type": "img"
+          },
+          {
+            "type": "img"
+          },
+          {
+            "type": "img"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

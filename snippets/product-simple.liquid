@@ -1,0 +1,201 @@
+<!-- Created by Andy 29/08/2017 -->
+{% include 'product-res-variables' %}
+<div class="main-content shop-page main-content-detail">
+  <div class="container">
+    <div class="breadcrumbs">
+      <a href="/">Home</a> / <a href="{{product.collections[0].url}}">{{product.collections[0].title}}</a> / {{product.title | link_to: product.url}}
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 content-offset">
+        <div class="js_product_single about-product row" id="product-single">
+          <div class="details-thumb col-xs-12 col-sm-12 col-md-6 col-lg-6">
+           
+            	{% if product.images.size > 0 %}
+                <div class="slider-for">                      
+                  {% for image in product.images %}                       
+                  <div id="main_img_{{image.id }}" data-image-id="{{ image.id }}" class="full-item">
+                    {%- assign image = image.src -%}
+        			{%- if image -%}<img data-zoom-image="{{ image | img_url: '1920x' }}" src="{{ image | img_url: 'large' }}" />{%- endif -%}
+                  </div> 
+                  {% endfor %}                  
+                </div>  
+            	<div data-js-gallery class="open_gallery"><i class="las la-expand-arrows-alt"></i></div>
+                <div data-fotorama data-allow-full-screen="native" style="width:1px;height:1px;">
+                  {% for image in product.images %}                       
+                    {%- assign image = image.src -%}
+        			{%- if image -%}<img src="{{ image | img_url: '1920x' }}"/>{%- endif -%}                    
+                  {% endfor %}
+                </div>
+            	<div class="slider-nav">                      
+                  {% for image in product.images %}                       
+                  <div id="thumb_img_{{image.id }}" data-thumb-id="{{ image.id }}" data-image="{{ image.src | img_url: 'large' }}" data-z-image="{{ image.src | img_url: '1920x' }}" class="thumb_img">
+                    {%- assign image = image.src -%}
+        			{%- if image -%}<div class="lazyload pr_lazy_img" data-bgset="{{ image | img_url: '1x1' }}" data-ratio="{{image.aspect_ratio}}" data-sizes="auto" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 75}}%;"></div>{%- endif -%}
+                  </div> 
+                  {% endfor %}
+                </div>  
+            {% else %}
+                <div class="slider-for" >
+					<div data-image-id="{{ product.images[0].id }}" class="thumb_img">                      
+                      {%- assign image = product.images[0].src -%}
+        			{%- if image -%}<div class="lazyload pr_lazy_img" data-bgset="{{ image | img_url: '1x1' }}" data-ratio="{{image.aspect_ratio}}" data-sizes="auto" style="padding-top:{{ 1 | divided_by: image.aspect_ratio | times: 75}}%;"></div>{%- endif -%}
+                  </div>                      
+                </div>
+            {% endif %}
+
+          </div>
+          <div class="details-info col-xs-12 col-sm-12 col-md-6 col-lg-6" style="float:right;">
+            <a href="{{ product.url }}" class="product-name">{{ product.title }}</a>
+            
+            <div class="star-rating">
+              <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+            </div>
+            
+            <!--<div class="description" style="text-align: justify;">
+              {% if product.metafields.meta.description %}
+              	{{ product.metafields.meta.description | html }}
+              {%else%}
+              	{{ product.description  }}
+              {% endif %}
+            </div>-->
+            <div class="price">              
+              <span >{{ product.variants[0].price | money }}</span>
+            </div>
+            
+            <div class="pr-availability">
+              {{'products.product.availability' | t}}:               
+              	<a class="available" id="js-pr-available" {% if product.available %} style="display:inline-block;" {% else %} style="display:none;" {% endif %}  href="javascript:void(0);">{{'products.product.available' | t}}</a>             
+              	<a class="unavailable" id="js-pr-unavailable" {% if product.available %} style="display:none;" {% else %} style="display:inline-block;" {% endif %} href="javascript:void(0);"> {{'products.product.unavailable' | t}}</a>                
+            </div>
+            {% capture stock_countdown_html %}               
+                    <div class="product-page-info__stock-countdown">
+                        <div class="stock-countdown{% unless quantity > 0 %} d-none-important{% endunless %}" data-js-product-stock-countdown data-min="{{ stock_countdown_min }}">
+                            {% capture quantity_html %}<span class="stock-countdown__counter">{{ quantity }}</span>{% endcapture %}
+                            <p class="stock-countdown__title" data-js-product-stock-countdown-title>{{ 'products.product.stock_countdown_html' | t: quantity: quantity_html }}</p>
+                            {%- if show_stock_countdown_range -%}
+                                <div class="stock-countdown__range">
+                                    {%- assign countdown_range_quotient = stock_countdown_min | times: 1.0 | divided_by: 100 -%}
+                                    {%- assign countdown_range_procent = quantity | divided_by: countdown_range_quotient -%}
+                                    <div class="stock-countdown__progress" data-js-product-stock-countdown-progress style="width: {{ countdown_range_procent }}%;"></div>
+                                </div>
+                            {%- endif -%}
+                        </div>
+                    </div>               
+            {% endcapture %}
+            {% capture text_countdown_html %}             
+              <div class="product-page-info__text-countdown">
+                <div class="text-countdown js-text-countdown" data-reset-time="7" data-delivery-time="3" data-delivery-format="Day DD/MM/YYYY" data-delivery-excludes="Saturday, Sunday">
+                  {% capture text_countdown_counter_html %}<span class="text-countdown__counter" data-js-text-countdown-counter></span>{% endcapture %}
+                  {% capture text_countdown_delivery_html %}<span class="text-underline" data-js-text-countdown-delivery></span>{% endcapture %}
+                  {{ 'products.product.text_countdown_html' | t: counter: text_countdown_counter_html, delivery: text_countdown_delivery_html }}
+                </div>
+              </div>             
+            {% endcapture %}
+            {% capture visitors_html %}               
+              <div class="product-page-info__visitors">
+                <div class="visitors js-visitors" data-min="10" data-max="25" data-interval-min="2" data-interval-max="6" data-stroke="4">
+                  {%- assign visitors_random_diff = settings.product_visitors_max | minus: settings.product_visitors_min -%}
+                  {%- assign visitors_random = "now" | date: "%N" | modulo: visitors_random_diff | plus: settings.product_visitors_min -%}
+                  {% capture visitors_counter_html %}<span class="visitors__counter d-inline-block px-8" data-js-counter>{{ visitors_random }}</span>{% endcapture %}
+                  {{ 'products.product.visitors_html' | t: counter: visitors_counter_html }}
+                </div>
+              </div>                
+            {% endcapture %} 
+            {{stock_countdown_html}}
+            {{text_countdown_html}}
+            {{ visitors_html }}
+            <div class="group-page-other">
+              {% if product.options contains 'Size' %}
+              	<a data-page-open-popup href="#size-chart">{{ 'products.product.size_guide' | t}}</a>
+                <div id="size-chart" class="mfp-hide size-chart-open-popup">
+                  {{ pages.size-chart.content }}
+                </div>                
+              {% endif %}              
+              	<a data-page-open-popup href="#delivery-return">{{ 'products.product.delivery_return' | t}}</a>
+                <div id="delivery-return" class="mfp-hide size-chart-open-popup">
+                  {{ pages.delivery-and-return.content }}
+                </div>  
+            </div>
+            <div class="group-social">
+              <ul class="list-socials">
+                {% if settings.footer_social_twitter_enable %}
+              		<li>
+                		<a class="twitter" target="_blank" href="{{settings.footer_social_twitter_link}}" title="{{settings.footer_social_twitter_text}}"><i class="fa fa-twitter"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_facebook_enable %}
+              		<li>
+                		<a class="facebook" target="_blank" href="{{settings.footer_social_facebook_link}}" title="{{settings.footer_social_facebook_text}}"><i class="fa fa-facebook"></i></a>
+                    <li>
+                {% endif %}
+                {% if settings.footer_social_google_enable %}
+                    <li>
+                		<a class="google" target="_blank" href="{{settings.footer_social_google_link}}" title="{{settings.footer_social_google_text}}"><i class="fa fa-google-plus"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_pinterest_enable %}
+              		<li>
+                		<a class="pinterest" target="_blank" href="{{settings.footer_social_pinterest_link}}" title="{{settings.footer_social_pinterest_text}}"><i class="fa fa-pinterest-p"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_instargram_enable %}
+              		<li>
+                		<a class="instagram" target="_blank" href="{{settings.footer_social_instargram_link}}" title="{{settings.footer_social_instargram_text}}"><i class="fa fa-instagram"></i></a>
+              		</li>
+                {% endif %}
+
+                {% if settings.footer_social_tumblr_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_tumblr_link}}" title="{{settings.footer_social_tumblr_text}}"><i class="fa fa-tumblr-square"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_snapchat_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_snapchat_link}}" title="{{settings.footer_social_snapchat_text}}"><i class="fa fa-snapchat-ghost"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_youtube_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_youtube_link}}" title="{{settings.footer_social_youtube_text}}"><i class="fa fa-youtube-square"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_vimeo_enable %}
+                		<a class="tumblr" target="_blank" href="{{settings.social_vimeo_link}}" title="{{settings.footer_social_vimeo_text}}"><i class="fa fa-vimeo "></i></a>
+                {% endif %}
+              </ul>
+            </div>
+                       
+            <div class="js-quantity quantity" {% if product.available %} style="display:inline-block;" {% else %} style="display:none;" {% endif %}>
+              <div class="group-quantity-button">
+                <a class="js_minus" href="#"><i class="fa fa-minus" aria-hidden="true"></i></a>
+                <input id="Quantity" data-step="1" data-min="1" data-max="{{product.variants.first.inventory_quantity}}" class="input-text js_qty" type="text" size="4" title="Qty" value="1" name="quantity">
+                <a class="js_plus" href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
+              </div>
+            </div>
+            
+            <div class="group-button">
+              <div class="inner"> 
+                <a href="javascript:void(0);" class="add-to-cart js_add_to_cart_button" {% if product.available %} style="display:inline-block;" {% else %} style="display:none;" {% endif %}  data-pid="{{ product.variants.first.id }}"><span class="text">{{'products.product.add_to_cart' | t | upcase }}</span><span class="icon"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></span></a>
+                <a class="add-to-cart js-btn-sold-out" {% if product.available %} style="display:none;" {% else %} style="display:inline-block;" {% endif %}  onclick="location.href='{{ product.url | within: collection }}'"><span class="text">{{'products.product.sold_out' | t | upcase }}</span><span class="icon"><i class="fa fa-cart-arrow-down" aria-hidden="true"></i></span></a>
+                <a href="javascript:void(0);" class="compare-button js-compare" {% if product.available %} style="display:inline-block;" {% else %} style="display:none;" {% endif %}  data-pid="{{product.handle}}"><i class="fa fa-exchange" aria-hidden="true"></i></a>
+                <a href="javascript:void(0);" class="wishlist-button wishlist" ><i class="fa fa-heart-o" aria-hidden="true"></i></a>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+        
+        {% if settings.use_product_tabs %}
+        	{% include 'product_tabs'%}
+        {% endif %}        
+      </div>      
+    </div>
+    
+    {% if settings.use_related_products %}
+    	{% include 'related_products' %}
+    {% endif %}
+    
+    {% section 'products-recently-viewed' %}
+  </div>
+
+</div>

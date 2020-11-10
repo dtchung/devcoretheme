@@ -1,0 +1,179 @@
+<!--Footer-->
+<footer>
+  <div class="footer layout1 ">
+    <div class="container">
+      <div class="main-footer">
+        <div class="row">
+          <div class="col-xs-12 col-sm-4 col-md-4 col-lg-3 col-ss-12">
+            
+			{% if section.settings.footer2_use_contact_infor %}
+            <div class="widget widget-text">
+              <h3 class="widgettitle">{{section.settings.footer_title_contact_block}}</h3>
+              <div class="content">
+                <h5 class="subtitle">{{section.settings.footer_title_address_field}}</h5>
+                <p class="des">{{section.settings.footer_address_contact}}</p>
+                <h5 class="subtitle">{{section.settings.footer_title_phone_field}}</h5>
+                <p class="des">{{section.settings.footer_phone_contact}}</p>
+                <h5 class="subtitle">{{section.settings.footer_title_email_field}}</h5>
+                <p class="des">{{section.settings.footer_email_contact}}</p>
+              </div>
+            </div>
+            {% endif %}
+            {% if section.settings.footer2_use_social_link %}
+            <ul class="list-socials">
+              {% if settings.footer_social_twitter_enable %}
+              		<li>
+                		<a class="twitter" target="_blank" href="{{settings.footer_social_twitter_link}}" title="{{settings.footer_social_twitter_text}}"><i class="fa fa-twitter"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_facebook_enable %}
+              		<li>
+                		<a class="facebook" target="_blank" href="{{settings.footer_social_facebook_link}}" title="{{settings.footer_social_facebook_text}}"><i class="fa fa-facebook"></i></a>
+                    <li>
+                {% endif %}
+                {% if settings.footer_social_google_enable %}
+                    <li>
+                		<a class="google" target="_blank" href="{{settings.footer_social_google_link}}" title="{{settings.footer_social_google_text}}"><i class="fa fa-google-plus"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_pinterest_enable %}
+              		<li>
+                		<a class="pinterest" target="_blank" href="{{settings.footer_social_pinterest_link}}" title="{{settings.footer_social_pinterest_text}}"><i class="fa fa-pinterest-p"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_instargram_enable %}
+              		<li>
+                		<a class="instagram" target="_blank" href="{{settings.footer_social_instargram_link}}" title="{{settings.footer_social_instargram_text}}"><i class="fa fa-instagram"></i></a>
+              		</li>
+                {% endif %}
+
+                {% if settings.footer_social_tumblr_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_tumblr_link}}" title="{{settings.footer_social_tumblr_text}}"><i class="fa fa-tumblr-square"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_snapchat_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_snapchat_link}}" title="{{settings.footer_social_snapchat_text}}"><i class="fa fa-snapchat-ghost"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_youtube_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_youtube_link}}" title="{{settings.footer_social_youtube_text}}"><i class="fa fa-youtube-square"></i></a>
+              		</li>
+                {% endif %}
+                {% if settings.footer_social_vimeo_enable %}
+              		<li>
+                		<a class="tumblr" target="_blank" href="{{settings.social_vimeo_link}}" title="{{settings.footer_social_vimeo_text}}"><i class="fa fa-vimeo "></i></a>
+              		</li>
+                {% endif %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="col-xs-12 col-sm-8 col-md-8 col-lg-9 col-ss-12">
+            <div class="newsletter-form layout1 box-has-content">
+              <div class="widget widget-newsletter">
+                <h3 class="widgettitle">{{section.settings.footer_newsletter_title}}</h3>
+                <div class="row">
+                  <div class="col-xs-12 col-sm-12 col-md-6">
+                    <p class="des">{{section.settings.footer_newsletter_subtitle}}</p>
+                  </div>
+                  <div class="col-ts-12 col-xs-8 col-sm-12 col-md-6">	
+                    <div class="newsletter-block">
+                      <form method="post" action="{{settings.newsletter_form_action}}">
+                        <div class="newsletter-inner">
+                          <input type="text" class="newsletter-info" name="EMAIL" placeholder="{{section.settings.footer_newsletter_placeholder}}">
+                        </div>
+                      	<button type="submit" name="submit_button" class="submit">{{section.settings.footer_newsletter_button}}</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row auto-clear">
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 col-ts-12 ">
+                <div class="widget widget-custom-menu">
+                  <h3 class="widgettitle">{{section.settings.footer_quicklinks_title}}</h3>
+                  <ul >
+                    {% if section.settings.footer2_use_first_footer %}
+                      {% if section.settings.footer_first_linklist %}
+                        {% for link in linklists[section.settings.footer_first_linklist].links %}
+                            {% assign child_list_handle = link.title | handleize %}
+                            <li><a href="{{link.url}}">{{link.title}}</a></li>
+                        {% endfor %}
+                      {% endif %}
+                    {% endif %}	                    
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 col-ts-12 ">
+                <div class="widget widget-custom-menu">
+                  <h3 class="widgettitle">{{section.settings.footer_quicklinks_second_title}}</h3>
+                  <ul >
+                    {% if section.settings.footer2_use_second_footer %}
+                        {% if section.settings.footer_second_linklist %}
+                            {% for link in linklists[section.settings.footer_second_linklist].links %}
+                                {% assign child_list_handle = link.title | handleize %}
+                                <li><a href="{{link.url}}">{{link.title}}</a></li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 col-ts-12">
+                <div class="widget widget-custom-menu">
+                  <h3 class="widgettitle">{{section.settings.footer_quicklinks_third_title}}</h3>
+                  <ul >
+                    {% if section.settings.footer2_use_third_footer %}
+                        {% if section.settings.footer_third_linklist %}
+                            {% for link in linklists[section.settings.footer_third_linklist].links %}
+                                {% assign child_list_handle = link.title | handleize %}
+                                <li><a href="{{link.url}}">{{link.title}}</a></li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 col-ts-12">
+                <div class="widget widget-custom-menu">
+                  <h3 class="widgettitle">{{section.settings.footer_quicklinks_fourth_title}}</h3>
+                  <ul >
+                    {% if section.settings.footer2_use_fourth_footer %}
+                        {% if section.settings.footer_fourth_linklist %}
+                            {% for link in linklists[section.settings.footer_fourth_linklist].links %}
+                                {% assign child_list_handle = link.title | handleize %}
+                                <li><a href="{{link.url}}">{{link.title}}</a></li>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-note">
+        <div class="row">
+          <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8 left-content">
+            <div class="coppy-right">
+              <h3 class="content">{{section.settings.footer_copyright_text}}</h3>
+            </div>
+          </div>
+          <div class="col-xs-12 col-sm-12 col-md-5 col-lg-4 right-content">
+            <ul class="list-payment">
+              <li><a href="#"><img src="{{ section.settings.paypal1 }}" alt=""></a></li>
+              <li><a href="#"><img src="{{ section.settings.paypal2 }}" alt=""></a></li>
+              <li><a href="#"><img src="{{ section.settings.paypal3 }}" alt=""></a></li>
+              <li><a href="#"><img src="{{ section.settings.paypal4 }}" alt=""></a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--/Footer-->

@@ -1,0 +1,24 @@
+<div class="search-form layout2 box-has-content">
+  <form action="/search" method="get" role="search" class="form-search">
+    <div class="search-block">
+
+      <div class="search-choice parent-content">
+        <select id="search_option" data-placeholder="All Categories" class="chosen-select">
+          <option value="title">Title</option>
+          <option value="handle">Handle</option>
+          <option value="vendor">Vendor</option>
+          <option value="product_type">Product Type</option>
+          <option value="tag">Tag</option>
+          <option value="variant">Variant</option>
+          <option value="sku">Sku</option>  
+        </select>
+      </div>
+      <div class="search-inner">
+        <input id="main_search" type="text" name="q" value="{{ search.terms | escape }}" aria-label="{{ 'general.search.placeholder' | t }}" placeholder="{{ 'general.search.placeholder' | t }}" class="search-info">
+      </div>
+      <input type="hidden" name="type" value="product" />
+      <a href="#" class="search-button btn-search"><i class="fa fa-search" aria-hidden="true"></i></a>
+
+    </div>
+  </form>
+</div>
