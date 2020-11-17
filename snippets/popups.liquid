@@ -1,0 +1,64 @@
+{%- assign template = template.name | handle -%}
+{% assign wishlist_enable = true | default: settings.wishlist_enable %}
+{% assign compare_enable = false | default: settings.compare_enable %}
+{%- assign namespaces = 'wishlist,compare' | split: ',' -%}
+{%- for namespace in namespaces -%}
+    <template id="template-{{ namespace }}-ajax">
+        <div>
+            {%- assign image_size = '100x' -%}
+            {%- assign show_title = show_title | default: true -%}
+            {%- assign show_variant = show_variant | default: true -%}
+            {%- assign show_price = show_price | default: true -%}
+            {%- assign show_button_remove = show_button_remove | default: true -%}
+            <div class="product-store-lists" data-js-product data-product-handle="{{ product.handle }}" data-product-variant-id="{{ id }}">
+                <div class="product-store-lists__image ">
+                    <a href="{{ url }}" class="d-block">
+                        <img>
+                    </a>
+                </div>
+                <div class="product-store-lists__content">
+                    
+                        <div class="product-store-lists__title">
+                            <h3>
+                                <a href="{{ url }}">{{ title }}</a>
+                            </h3>
+                        </div>    
+                        {% capture default_variant_title %}{{ 'products.product.default_variant_title' | t }}{% endcapture %}
+                        <div class="product-store-lists__variant{% if variant_title == 'Default Title' %} d-none{% endif %}">{{ variant_title | replace: 'Default Title', default_variant_title }}</div>
+                   
+                        <div class="product-store-lists__price mt-10 mb-10">
+                            {% render 'product-get-price' with price: price compare_at_price: compare_at_price %}
+                        </div>
+                        <span class="product-store-lists__remove btn-link js-store-lists-remove-{{ namespace }}" title="{{ 'products.product.remove' | t }}"><i class="las la-trash"></i></span>
+                 </div>
+            </div>
+        </div>
+    </template>
+{%- endfor -%}
+<div class="popup js-popup" tabindex="0">
+    <div class="mask-overlay"></div> 
+    {% include 'modal-quickview' %}  
+    {% include 'modal-compare' %}
+    {%- assign search_pr_type = search.terms | split:'product_type:' | last | url_encode -%}
+    <div id="nt_search_canvas" class="hero_canvas  lazyload" data-include="{{ routes.search_url }}?q={{search_pr_type}}&view=ajax-product"></div>
+    {%- if admin_sp == false -%}
+    <div class="js_lz_slpr dn" data-include="/search/?q={{t_name}}&view=cr_s_pp"></div>
+    {%- endif -%} 
+  
+    <div class="popup__bg fixed-stretch cursor-pointer" data-js-popup-bg></div>
+   	
+    {%- if wishlist_enable -%}
+        <div class="popup__body position-relative " data-js-popup-name="wishlist" data-popup-right data-js-popup-ajax>
+            {% include 'popup-wishlist' %}
+        </div>
+        <div class="popup__body position-relative" data-js-popup-name="wishlist-full" data-popup-center data-js-popup-ajax>
+            {% include 'popup-wishlist-full' %}
+        </div>
+    {%- endif -%}
+    {%- if compare_enable -%}
+        <div class="popup__body position-relative d-none" data-js-popup-name="compare-full" data-popup-center data-js-popup-ajax>
+            {% include 'popup-compare-full' %}
+        </div>
+    {%- endif -%}
+    
+</div>

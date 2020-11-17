@@ -41,7 +41,7 @@ what you are doing, as you may break the app.
 {%- endcapture -%}
 
 <section class="ooo-instagram" data-section-id="{{ section.id }}" data-section-type="app-section-feed" data-section-settings='{{ section_settings }}'>
-  <div class="ooo-instagram-container">
+  <div class="ooo-instagram-container {% if section.settings.full_width != true %}container {% endif %}">
     {%- if section.settings.title != blank or section.settings.subheading != blank -%}
       <header class="ooo-instagram-header">
         {%- if section.settings.title != blank -%}
@@ -172,7 +172,7 @@ what you are doing, as you may break the app.
     {%- unless section.settings.full_width -%}
       [data-section-id="{{ section.id }}"] .ooo-instagram-container {
         max-width: var(--ooo-instagram-container-max-width);
-        padding: 0 var(--ooo-instagram-external-gutter);
+        /*padding: 0 var(--ooo-instagram-external-gutter);*/
         margin-left: auto;
         margin-right: auto;
       }

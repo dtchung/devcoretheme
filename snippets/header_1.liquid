@@ -40,23 +40,24 @@
               <ul class="header-control">                
                 {% if customer %}
                   <li>
-                    <a href="/account/logout" class="user-icon" data-js-tooltip data-tippy-content="{{'customer.logout.title' | t}}">
+                    <a href="/account/logout" class="header-icon" data-js-tooltip data-tippy-content="{{'customer.logout.title' | t}}">
                     	<i class="fa fa-sign-out" aria-hidden="true"></i>
                     </a></li>
                 {% else %}
                   <li>
-                    <a href="/account/login" class="push_side user-icon" data-id="#nt_login_canvas" data-js-tooltip data-tippy-content="{{'customer.login.title' | t}}">
+                    <a href="/account/login" class="push_side header-icon" data-id="#nt_login_canvas" data-js-tooltip data-tippy-content="{{'customer.login.title' | t}}">
                       <i class="fa fa-user" aria-hidden="true"></i>
                     </a>                          
                   </li>
                 {% endif %} 
                 <li>
-                  <a href="/search/?view=wishlist" class="push_side user-icon" data-js-tooltip data-tippy-content="{{'general.wishlist.title' | t}}">
+                  <a href="javascript:void(0);" class="push_side header-icon" data-id="#nt_wishlist_canvas" data-js-tooltip data-tippy-content="{{'general.wishlist.title' | t}}">
                     <i class="fa fa-heart" aria-hidden="true"></i>
+                    <span class="header__counter" data-js-wishlist-count="0">0</span>
                   </a>                        
                 </li>
                 <li>
-                  <a href="javascript:void(0);" class="push_side user-icon js-compare " data-js-tooltip data-tippy-content="{{'general.compare.title' | t}}">
+                  <a href="javascript:void(0);" class="push_side header-icon js-compare " data-js-tooltip data-tippy-content="{{'general.compare.title' | t}}">
                     <i class="fa fa-balance-scale" aria-hidden="true"></i>
                   </a>                        
                 </li>

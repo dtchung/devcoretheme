@@ -59,13 +59,13 @@
         {% if is_color %}
         {% assign color__checkstyle = value | split: ' ' | last | handle %}
         <label for="swatch-{{ option_index }}-{{ value | handle }}" style="border-radius: 50%;">
-          <span style="background-color: {{ value | escape }}; {% if variant.available %} {% else %}background-image:url('{{ 'soldout.png' | asset_url }}'){% endif %}{% if color__checkstyle == 'white' %}border:1px solid #d6d6d6;{% endif %}"></span>
-          <!--<img class="crossed-out" src="{{ 'soldout.png' | asset_url }}" />-->
+          <span style="background-color: {{ value | escape }}; {% if variant.available %} {% else %}background-image:url('{{ 'image-soldout.png' | asset_url }}'){% endif %}{% if color__checkstyle == 'white' %}border:1px solid #d6d6d6;{% endif %}"></span>
+          <!--<img class="crossed-out" src="{{ 'image-soldout.png' | asset_url }}" />-->
         </label>
         {% else %}
         <label for="swatch-{{ option_index }}-{{ value | handle }}">
           <span>{{ value }}</span>
-          <img class="crossed-out" src="{{ 'soldout.png' | asset_url }}" />
+          <img class="crossed-out" src="{{ 'image-soldout.png' | asset_url }}" />
         </label>
         {% endif %}
       </div>

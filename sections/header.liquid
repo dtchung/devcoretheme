@@ -2,7 +2,7 @@
   assign se_blocks = section.blocks 
   assign tp_blocks = se_blocks | map: 'type' | join: ',' | remove:',link2' | remove:',link' | remove:',pr' | remove:',banner' | remove:',html' | remove:',cat' | split: ','
 %}
-<script src="{{ 'section.mega-menu.js' | asset_url }}" type="text/javascript"></script>
+
 {%- if template.suffix == "item_menu" and template.name == 'search' -%}
 	{%- render 'menu_import',section:section -%}	
 {%- else -%}

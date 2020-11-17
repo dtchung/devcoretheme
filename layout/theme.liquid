@@ -83,7 +83,7 @@
     </main>
     {% section 'footer' %}
   </div>  
-  <div class="mask-overlay"></div>  
+   
   {% liquid 
     assign type_name = request.page_type
     assign admin_sp = false
@@ -96,25 +96,18 @@
       assign admin_sp = true
     endif 
     section 'cross-sell-popup'  
-    if type_name != 'cart'
-      section 'cart_widget'
-  endif  
+  	if type_name != 'cart'
+  		section 'cart_widget'
+	endif  
     if type_name == 'product' and settings.sticky_atc and product.available
       section 'sticky_add_to_cart'
     endif
     section 'promotion-product-popup'  
   %}
   
-  {% include 'modal-quickview' %}  
-  {% include 'modal-compare' %}
-  {% include 'currencies' %}
+  {% include 'popups' %}
   
-  {%- if admin_sp == false -%}
-    <div class="js_lz_slpr dn salse_pp_mb_{{settings.enable_salse_pp_mb}}" data-include="/search/?q={{t_name}}&view=cr_s_pp"></div>
-  {%- endif -%}
-  {% comment %}{% include 'upsell-modal' %} {% endcomment %}
-  {%- assign search_pr_type = search.terms | split:'product_type:' | last | url_encode -%}
-  <div id="nt_search_canvas" class="hero_canvas  lazyload" data-include="{{ routes.search_url }}?q={{search_pr_type}}&view=ajax-product"></div>
-  <a class="back-to-top" href="#"></a>
+  {% include 'currencies' %}
+ 
 </body>
 </html>
