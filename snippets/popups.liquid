@@ -45,13 +45,13 @@
     <div class="js_lz_slpr dn" data-include="/search/?q={{t_name}}&view=cr_s_pp"></div>
     {%- endif -%} 
   
-    <div class="popup__bg fixed-stretch cursor-pointer" data-js-popup-bg></div>
+    <div class="popup__bg" data-js-popup-bg></div>
    	
     {%- if wishlist_enable -%}
-        <div class="popup__body position-relative " data-js-popup-name="wishlist" data-popup-right data-js-popup-ajax>
+        <div class="popup__body " data-js-popup-name="wishlist" data-popup-right data-js-popup-ajax>
             {% include 'popup-wishlist' %}
         </div>
-        <div class="popup__body position-relative" data-js-popup-name="wishlist-full" data-popup-center data-js-popup-ajax>
+        <div class="popup__body" data-js-popup-name="wishlist-full" data-popup-center data-js-popup-ajax style="width:1px; height:1px; overflow:hidden;">
             {% include 'popup-wishlist-full' %}
         </div>
     {%- endif -%}

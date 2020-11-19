@@ -1,12 +1,6 @@
 jQuery(document).ready(function ($) {
   "use strict";
-    //menu onepage
-    $(".each-section .next-section").on( "click", function(e) {
-      var url = $(this).attr("href");
-      var target = $(url).offset().top; 
-      $('html,body').animate({scrollTop:target}, 'slow');
-      return false;
-    });
+   
    function kt_tab_effect(){
       // effect click
       $(document).on('click','.kt-tab a[data-toggle="pill"]',function(){

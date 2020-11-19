@@ -1,6 +1,14 @@
 (function(){
        'use strict'; 
     jQuery(document).ready(function($) {
+      
+      {% if settings.show_multiple_currencies %}                                                                                                                       
+      if (cookieCurrency != null) {        
+        $("."+cookieCurrency).addClass('active');
+        $('.lang-currency').empty();        
+        $('.lang-currency').append($(".currency-lists ."+cookieCurrency).text());  
+      };
+      {% endif %} 
       {% if customer %} 
       	var is_customers = true;
       {% else %}
