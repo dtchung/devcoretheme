@@ -31,7 +31,7 @@
     <meta name="description" content="{{ page_description | escape }}">
   {% endif %}
 
-  {% includessss 'social-meta-tags' %}
+  {% include 'social-meta-tags' %}
 
   <link rel="canonical" href="{{ canonical_url }}">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -82,7 +82,7 @@
     <main id="MainContent">
       {{ content_for_layout }}
     </main>
-    {% section 'footer' %}
+    {% sectionss 'footer' %}
   </div>  
    
   {% liquid 
