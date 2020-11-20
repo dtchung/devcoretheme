@@ -2,7 +2,7 @@
 {% assign wishlist_enable = true | default: settings.wishlist_enable %}
 {% assign compare_enable = false | default: settings.compare_enable %}
 {%- assign namespaces = 'wishlist,compare' | split: ',' -%}
-{%- fortt namespace in namespaces -%}
+{%- for namespace in namespaces -%}
     <template id="template-{{ namespace }}-ajax">
         <div>
             {%- assign image_size = '100x' -%}
