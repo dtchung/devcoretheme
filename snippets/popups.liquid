@@ -4,7 +4,7 @@
 {%- assign namespaces = 'wishlist,compare' | split: ',' -%}
 {%- assign andy = "Test" -%}
 {%- for namespace in namespaces -%}
-    <template id="template-{{ namespace }}-ajax">
+    <template id="template-{{ namespace }}-ajax" title="Andy Dao">
         <div>
             {%- assign image_size = '100x' -%}
             {%- assign show_title = show_title | default: true -%}
